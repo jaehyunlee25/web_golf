@@ -1,0 +1,2050 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="ko">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=euc-kr" />
+    <meta http-equiv="Cache-Control" content="no-cache" />
+    <meta http-equiv="Imagetoolbar" content="no" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<!--[if lt IE 8]><meta http-equiv="refresh" content="0; url=/ieupdate/ieupdate.html" /><![endif]-->
+	<meta name="viewport" content="width=device-width, height=device-height, minimum-scale=0.15, maximum-scale=1.0, target-densitydpi=medium-dpi, width=800" />
+	<meta name="author" content="" />
+	<meta name="description" content="" />
+	<meta name="keywords" content="" />
+	<title>인천그랜드CC</title>
+
+	<link rel="shortcut icon" href="/image/common_icon_and.ico" />
+	<link rel="apple-touch-icon-precomposed" href="/image/common_icon_and.ico" />
+	<link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Lato:300,400,700" />
+	<link rel="stylesheet" type="text/css" href="/css/common.css" />
+	<link rel="stylesheet" type="text/css" href="/css/sub.css" />
+	<link rel="stylesheet" type="text/css" href="/css/cminfor.css" />
+
+<link rel="stylesheet" href="/css/cm_reservation.css" type="text/css">
+<link rel="stylesheet" href="/css/cm_reservation_popdiv.css" type="text/css">
+<link rel="stylesheet" href="/css/cm_reservation_tab.css" type="text/css">
+
+<script language="javascript" type="text/javascript" src="/cm_JavaScript/common.js"></script>
+
+<script language="javascript" type="text/javascript" src="/js/common.js"></script>
+
+<script language="javascript" type="text/javascript" src="/cm_JavaScript/jquery/jquery-1.11.1.js"></script>
+<script language='javascript' type='text/javascript' src='/cm_JavaScript/jQuery/jquery.DOMWindow.js'></script>
+
+<!-- <script language="javascript" type="text/javascript" src="/cm_JavaScript/body_size.js"></script> -->
+
+<script language="JavaScript" type="text/javascript" src="/cm_JavaScript/class.tooltip.js"></script>
+
+<script type="text/javascript" src="/js/rolling_zone.js"></script>
+<script type="text/javascript" src="/js/menu.layer.js"></script>
+<script language="JavaScript" type="text/JavaScript">
+//<!--
+	/* Common */
+	//주소창 숨겨서 최적사이즈 맞추기
+	if (window.addEventListener != null)
+	{
+		window.addEventListener('load', function(){
+		setTimeout(scrollTo, 0, 0, 0);//페이지 이동이나 새로고침시 화면 1px씩 올라가는것 때문에 setTimeout(scrollTo, 0, 0, 1);을 수정
+		}, false); 
+	}
+
+
+	/*##################################################################################################################################################################*/
+	//------------------------------------------------------------
+	// 현재세팅값으로 다시 로딩 작업 진행.
+	//------------------------------------------------------------	
+	function main_fnReload(cal, time){
+		//alert(cal+" | "+time);
+		// 기존값 가져오기	
+		var prevDate = $("#main_chang_prevDate").val();
+		var nowDate  = $("#main_chang_nowDate").val();
+		var nextDate = $("#main_chang_nextDate").val();
+		var pointdate = $("#main_toDay").val();
+
+		// 카렌더 호출
+		if (cal == "T"){
+			main_calendar_change(prevDate, nowDate, nextDate, pointdate)
+		}				
+	}
+	
+	//------------------------------------------------------------
+	// 카렌더 처리 부분
+	//------------------------------------------------------------	
+	// 달렬변경 부분 (이전달, 현재달, 다음달, 선택날짜)
+	function main_calendar_change(prevDate, nowDate, nextDate, pointdate){
+		//alert(prevDate +" | "+nowDate +" | "+nextDate +" | "+pointdate +"");
+		
+		// 변경값 세팅 부분
+		$("#main_chang_prevDate").val(prevDate);
+		$("#main_chang_nowDate").val(nowDate);
+		$("#main_chang_nextDate").val(nextDate);
+		$("#main_toDay").val(pointdate)
+		
+		// 달력 갯수 세팅 부분
+		var scnt = 1;
+		
+		// 달력 세팅 부분
+		if (scnt == 3){
+			// 달력호출
+			main_calendar_view(prevDate, 1)
+			main_calendar_view(nowDate, 2)
+			main_calendar_view(nextDate, 3)
+		}else if (scnt == 2){
+			// 달력호출
+			main_calendar_view(nowDate, 1)
+			main_calendar_view(nextDate, 2)
+		}else{
+			// 달력호출
+			main_calendar_view(nowDate, 1)
+		}
+	}
+
+	// 달력 세팅 부분
+	function main_calendar_view(sdate, cid){
+
+		//alert(sdate +" | "+cid +"");
+	
+		var actionurl = "";
+
+		if (sdate != ""){ 
+			$("#main_schDate").val(sdate);
+		}
+		$("#main_calnum").val(cid);
+		
+		//
+	
+		actionurl = "/GolfRes/mainpage/main_calendar_new_ajax_view.asp";
+		
+		
+		var tt = 0;
+		if (tt == 1){
+			$("#main_listform_calender").attr("action", actionurl);
+			$("#main_listform_calender").submit();
+		}else{
+			$.ajax({
+				async: false,
+				type: "post",
+				url : actionurl,
+				data : $("#main_listform_calender").serialize(),
+				dataType : "html",
+				success: function(obj){
+					$("#main_calendar_view_ajax_"+cid+"").html(obj);
+				},
+				error: function(xhr, option, error){
+					  alert(xhr.status+" | "+error); //오류코드 | 오류내용
+				}
+				/*error : function(success){
+					meg = "서버와 통신중 에러가 발생하였습니다."
+					alert("처리결과 : "+meg);
+				}*/
+				, beforeSend: function() {
+					//통신을 시작할때 처리	
+					$("#main_calendar_view_ajax_"+cid+"").html('<img src="/image/loading.gif" alt="loading"/>');
+				}
+				, complete: function() {
+					//통신이 완료(success)된 후 처리
+					//$("#main_calendar_view_ajax_"+cid+"").html('');
+				}
+			});
+		}
+	}
+
+	/*##################################################################################################################################################################*/
+	//------------------------------------------------------------
+	// 타임리스트 데이터 처리 부분
+	//------------------------------------------------------------
+	// 타임리스트 호출 부분
+	function main_timefrom_change(pointdate, openyn, dategbn, courseid, time, atype, main_link_code){
+		//alert(pointdate+" | "+openyn+" | "+dategbn+" | "+courseid+" | "+time+" | "+atype+" | "+main_link_code)
+		//return;
+		// 카렌더에 날자변경 세팅 부분
+		$("#main_toDay").val(pointdate)
+		//alert($("#toDay").val());
+		
+		
+		// 초기화
+		if (pointdate == ""){ pointdate = $("#main_golf_pointdate").val() }
+		if (courseid == ""){ courseid = $("#main_golf_courseid").val() }
+		if (openyn == ""){ openyn = $("#main_golf_openyn").val() }
+		if (dategbn == ""){ dategbn = $("#main_golf_dategbn").val() }
+		if (time == ""){ time = $("#main_golf_choice_time").val() }
+		if (time == ""){ time = "00" }
+		if (atype == ""){ atype = $("#main_golf_restype").val() }		
+
+		// 처리
+		$("#main_golf_pointdate").val(pointdate);
+		$("#main_golf_openyn").val(openyn);
+		$("#main_golf_dategbn").val(dategbn);
+		$("#main_golf_choice_time").val(time);
+		$("#main_golf_restype").val(atype);
+	
+		var actionurl = "" 
+		//
+		//$("#golf_settype").val("R");
+		if (main_link_code == ""){
+			
+				actionurl = "/GolfRes/onepage/real_reservation.asp"
+			
+		}else{
+			
+				actionurl = "/GolfRes/onepage/"+main_link_code+"_reservation.asp"
+			
+		}
+
+		//
+		$("#main_golf_reservation").attr("action", actionurl);
+		$("#main_golf_reservation").submit();
+	}
+
+	/*##################################################################################################################################################################*/
+	//------------------------------------------------------------
+	// Div 달력 팝업
+	//------------------------------------------------------------
+	function mainDivCalendrShow(course_cnt, resdate, courseinfo, teaminfo, e, calltype) {
+		//alert("popDivCalendrShow");
+
+		//alert((posx)+"|"+(posy));
+		var cnt = course_cnt
+		var cntinfo = courseinfo.split("|");
+		var teaminfo = teaminfo.split("|");  
+		//
+
+		if (calltype == "L"){
+		}else{
+			//타이틀
+			//$("#popcalendardiv #bookgtitle").empty().append("[예약가능팀수("+totalcnt+"팀)]");
+			$("#res_date").empty().append(resdate);
+			
+			//
+			for (i=1; i<=cnt; i++)
+			{
+				$("#courseinfoname_"+i).empty().append(cntinfo[i-1]);
+				$("#courseinfoteam_"+i).empty().append(teaminfo[i-1]);
+			}
+		}
+	}
+
+	function mainDivCalendrHide(course_cnt, courseinfo) {
+		var cnt = course_cnt
+		var cntinfo = courseinfo.split("|");
+		//
+		for (i=1; i<=cnt; i++)
+		{
+			$("#courseinfoname_"+i).empty().append(cntinfo[i-1]);
+			$("#courseinfoteam_"+i).empty().append(0);
+		}
+	}
+
+
+	//자동실행 - body onload의 대체
+	$(function(){
+		// 모든 페이지에 보일때 오픈 달력 처리 부분
+		//main_calendar_change('','','','');
+
+		// 모든 페이지에 보일때 게시판&이벤트 처리 부분
+		//main_multi_board_list("site", "main_board_list", "NOTICE", "L", "1", "5")
+		//main_event_board_list("site", "main_event_list", "EVENT", "L", "1", "5")
+
+		// 모든 페이지에 보일때 잔여타임&조인방 처리 부분
+		//main_golftime_list("golf", "main_res_time_list", "COURSE", "5")
+		//main_joinroom_list("golf", "main_join_room_list", "1", "5")
+	});	
+//-->
+</script>
+
+<script language="JavaScript" src="/cm_JavaScript/class.tooltip.js"></script>
+<script language="javascript" src="/js/golfRes.js"></script>
+<script language="JavaScript" type="text/JavaScript">
+<!--
+	/*##################################################################################################################################################################*/
+	//------------------------------------------------------------
+	// 예약 데이터 처리 부분
+	//------------------------------------------------------------
+	function subcmd(atype, pointid, pointtime, pointname, bookgdatekor, bookghole, flagtype, punish_cd, greenfee_base, greenfee_dis, part_cd, alert_info, self_t_yn, res_gubun, virtual_tf, impend_time_yn, bookgdate, inwon){
+	
+	//[2020-03-04] 캐디피추가
+	var bookg_caddyfee
+	if ( bookghole == '09홀' ) {
+		//bookg_caddyfee = '70,000원';
+      if (bookgdate >= '20210901') { 
+		bookg_caddyfee = '80,000원';
+		}
+		else {
+		bookg_caddyfee = '70,000원';
+		}
+	}else{
+		//bookg_caddyfee = '130,000원';
+      if (bookgdate >= '20210901') { 
+		bookg_caddyfee = '140,000원';
+		}
+		else {
+		bookg_caddyfee = '130,000원';
+		}
+	}
+
+	
+	var inwon_txt
+	if (bookgdate > '20210711' && bookgdate < '20210823' && part_cd == '3' ) {
+		inwon_txt = '* 2인 필수';
+		$("#inwon").css("display", "");
+	}else if ( inwon == 'Y' ) {
+		inwon_txt = '* 4인 필수 (3인내장시 인당 그린피 2만원 추가)';
+		$("#inwon").css("display", "");
+	}else{
+		inwon_txt = '';
+		$("#inwon").css("display", "none");
+	}
+	
+	// 코로나 4단계
+	var covid = [
+		'20210712',
+		'20210713',
+		'20210714',
+		'20210715',
+		'20210716',
+		'20210717',
+		'20210718',
+		'20210719',
+		'20210720',
+		'20210721',
+		'20210722',
+		'20210723',
+		'20210724',
+		'20210725',
+		'20210726',
+		'20210727',
+		'20210728',
+		'20210729',
+		'20210730',
+		'20210731',
+		'20210801',
+		'20210802',
+		'20210803',
+		'20210804',
+		'20210805',
+		'20210806',
+		'20210807',
+		'20210808',
+		'21000101'
+	];
+	if(covid.indexOf(bookgdate) >= 0){
+		if(part_cd == '3'){
+			$(".covid_popup").show();
+		}
+	}
+
+	//alert(atype+" | "+pointid+" | "+ pointtime+" | "+ pointname+" | "+bookgdatekor+" | "+bookghole+" | "+flagtype+" | "+punish_cd+" | "+greenfee_base+" | "+greenfee_dis+" | "+part_cd+" | "+alert_info+" | "+self_t_yn+" | "+virtual_tf+" | "+impend_time_yn)
+
+	
+		if(confirm("로그인후 이용 하시기 바랍니다. \n로그인페이지로 이동하시겠습니까?")){
+		
+			var returnurl = encodeURIComponent("/GolfRes/onepage/real_reservation.asp?pointdate="+$("#list_pointdate").val()+"&openyn="+$("#list_openyn").val()+"&settype="+atype);
+			document.location.href = "/login/login.asp?returnurl="+returnurl;
+		
+			return;
+		}else{
+			return;
+		}	
+	
+	}
+
+	function openModalWin(){  
+		
+		
+			// 쿠폰 정보 넣는 부분
+			real_couponinfo();
+			var swidth  = 404;
+			var sheight = 477;
+		
+			sheight = sheight + 24;
+		
+			sheight = sheight + 45;
+		
+			//
+			if ($("#openyn").val() == "0" || $("#openyn").val() == "0"){
+
+				swidth  = swidth+0;
+				sheight = sheight+175;
+				
+			
+				// 부가내용
+				sheight = sheight+35;
+			
+
+				$("#cm_popup_refcontent").css("display","")
+			}else{
+				$("#cm_popup_refcontent").css("display","none")
+			}
+
+			$("input[name='ref_temp_check']").prop("checked",false);
+			$("#data_ref_check").val("");
+		
+
+		$.openDOMWindow({ 
+			borderSize:0,
+			loader:1,         
+			loaderImagePath:'animationProcessing.gif',         
+			loaderHeight:16,
+			loaderWidth:17,
+			windowPadding:1,
+			width:swidth,
+			height:sheight, 
+			windowSourceID:'#modalPop',
+			modal:1
+		});
+
+		// 위치값 세팅하기...
+		//$("#DOMWindow").css("top", String(Math.max($("#timeresbtn_" + $("#pointid").val()+"_"+$("#pointtime").val()).offset().top-sheight, 100)) + "px");
+
+		return false; 
+	}
+	
+	function subcmd1(atype){
+		//if (pointdate<="2010822" and  pointtime >="1500")
+	//	{
+		//}
+		//alert(atype+" | "+pointdate+" | "+pointtime+" | "+dategbn)
+		// 처리
+		//var actionurl = "./real_timeList.asp"
+		var actionurl = ""
+
+		if (atype == "R"){
+			actionurl =  "./real_resOk.asp"
+		}else{
+			actionurl =  "./real_resOk.asp"
+		}
+
+		// 호출한 값을 알아 온다
+		var cmd = $("#data_cmd").val();
+		// 
+		if (cmd == "ins"){
+			//
+			var checkPersonalFalg = checkPersonalForm();
+
+			if(checkPersonalFalg == true ){
+				// 입력데이터 처리
+				$("#data_hand_tel1").val($("#hand_tel1").val());
+				$("#data_hand_tel2").val($("#hand_tel2").val());
+				$("#data_hand_tel3").val($("#hand_tel3").val());
+				$("#data_bookg_cnt").val($("#join_bookg_cnt").val());
+				
+					$("#data_ref_name").val(escape($("#ref_name").val()));
+					$("#data_ref_tel1").val($("#ref_tel1").val());
+					$("#data_ref_tel2").val($("#ref_tel2").val());
+					$("#data_ref_tel3").val($("#ref_tel3").val());
+				
+				$("#data_coupon_info").val($("#coupon_insert_info").val());
+				
+
+				// 데이터 처리				
+				subcmd2(cmd, actionurl);				
+			}else{
+				if (checkPersonalFalg == "M")
+				{
+				}else{
+					$(".closeDOMWindow").click();
+					fnReload("T","T");
+				}
+			}
+		}
+
+	}
+
+	// AJAX 실제 전송.
+	function subcmd2(cmd, actionurl){
+			
+		var tt = 0;
+		// 처리부분	
+		if (tt == 1){
+			$("#dataform").attr("action", actionurl);
+			$("#dataform").submit();
+		}else{
+			
+			$.ajax({
+				async: false,
+				type: "POST",
+				url : actionurl,
+				data : $("#dataform").serialize(),
+				dataType : "json",
+				success:function(success){
+					if(success.result == "OK"){
+						// 성공처리	
+						/*$("#dataform").attr("action", "./my_golfreslist.asp");
+						$("#dataform").submit();
+						*/
+						//alert(unescape(success.gomsg));
+						document.location.href = "./my_golfreslist.asp";
+						
+						//alert(unescape(success.gomsg));
+					} else if ( success.result == "LOGIN"){
+						// 로그인 처리
+						alert(unescape(success.gomsg));
+						document.location.href = unescape(success.gonexturl);
+						
+					} else if ( success.result == "erUrl"){
+						// 로그인 처리
+						alert(unescape(success.gomsg));
+						document.location.href = unescape(success.gonexturl);
+					} else {
+						// 에러처리
+						alert(unescape(success.gomsg));
+						$(".closeDOMWindow").click();
+						fnReload("T","T");
+					}
+				},
+				error: function(xhr, option, error){
+					  alert(xhr.status+" | "+error); //오류코드 | 오류내용
+				}
+				/*error : function(success){
+					meg = "서버와 통신중 에러가 발생하였습니다."
+					alert("처리결과 : "+meg);
+				}*/
+			});
+			// 한글 깨짐 방지 복구처리
+			$("#pointname").val(unescape($("#pointname").val()));
+		}
+		
+	}
+
+	// 입력값 체크
+	function checkPersonalForm(){
+
+		// 날짜	
+		var pointdate = $("#pointdate").val();
+		pointdate = pointdate.substring(0,4)+"-"+pointdate.substring(4,6)+"-"+pointdate.substring(6,8);
+		// 시간
+		var pointtime = $("#pointtime").val();
+		pointtime = pointtime.substring(0,2)+":"+pointtime.substring(2,4);
+		// 코스
+		var pointname = unescape($("#pointname").val());
+		//alert(pointdate+pointtime)
+		var toDay = "20211226";
+		today  = new Date(toDay.substr(0,4), toDay.substr(4,2), toDay.substr(6,2));
+		var newday = new Date(pointdate.substr(0,4), pointdate.substr(4,2), pointdate.substr(6,2));
+
+		if( today > newday) {
+			alert('당일예약은 하실수 없습니다. 예약을 원하시면 예약실로 문의해주세요');
+			return "M";
+		}
+
+		// 셀프타이틀
+		var self_title = ""
+
+		
+		//
+		if(($("#hand_tel1").val().length < 1) || ($("#hand_tel2").val().length < 3) || ($("#hand_tel3").val().length < 3) ){
+			alert("긴급연락처를 정확히 입력후 신청버튼을 클릭하여주십시요.\n회원정보에 등록해 놓으시면 차후 로그인시부터 적용되어 편리하게 이용할 수 있습니다.")
+			$("#hand_tel2").focus();
+			return "M";
+		}
+	
+		// 지정캐디체크 확인	
+
+		if ($("#openyn").val() == "1" || $("#openyn").val() == "2"){
+
+			var count = $("input[name='appcad_temp_check']:checked").length;
+			// 체크부분
+			if (count == 1 ){
+
+				if($("#appcad_name").val().length < 1){
+					alert("지정캐디명을 입력해 주세요.")
+					$("#appcad_name").focus();
+					return "M";
+				}
+				//
+				var ref_name = $("#ref_name").val();
+				//				
+				$("#data_appcad_check").val($("#appcad_temp_check").val());
+
+			}else{
+				$("input[name='appcad_temp_check']").prop("checked",false);
+				$("#data_appcad_check").val("");					
+			}	
+		}
+	
+		// 위임체크 확인	
+
+		if ($("#openyn").val() == "0" || $("#openyn").val() == "0"){
+
+			var count = $("input[name='ref_temp_check']:checked").length;
+			// 체크부분
+			if (count == 1 ){
+
+				if($("#ref_name").val().length < 1){
+					alert("위임 예약자자명을 입력해 주세요.")
+					$("#ref_name").focus();
+					return "M";
+				}
+
+				if(($("#ref_tel1").val().length < 1) || ($("#ref_tel2").val().length < 3) || ($("#ref_tel3").val().length < 3) ){
+					alert("위임연락처를 정확히 입력후 신청버튼을 클릭하여주십시요.")
+					$("#ref_tel2").focus();
+					return "M";
+				}
+
+				var ref_name = $("#ref_name").val();
+				
+				if(confirm(pointdate+"일자 "+pointname+"코스 "+pointtime+" 타임을 "+ref_name+"님에게 위임예약을 하시겠습니까?\n\n예약이 확정되면 SMS로 예약내역이 발송됩니다.")){
+					$("#data_ref_check").val($("#ref_temp_check").val());
+					return true;
+				}else{
+					$("input[name='ref_temp_check']").prop("checked",false);
+					$("#data_ref_check").val("");
+					return false;
+				}
+			}else{
+				$("input[name='ref_temp_check']").prop("checked",false);
+				$("#data_ref_check").val("");					
+			}	
+		}
+	
+		
+		if(confirm(pointdate+"일자 "+pointname+"코스 "+pointtime+" 타임을 예약하시겠습니까?\n"+self_title+"예약이 확정되면 문자로 예약내역이 발송됩니다.")){
+		//if(confirm("시간변경은 예약조회/취소 메뉴에서 해당일에 한해 자유롭게 하실수 있으며, 예약취소는 예약일을 제외한 5일전 17:00이전까지 하셔야 위약규정이 적용되지 않습니다.\n ===============================================\n\n"+pointdate+"일자 "+pointname+"코스 "+pointtime+" 타임을 예약하시겠습니까?")){
+			return true;
+		}else{
+			return false;
+		}
+	}
+
+
+	/*##################################################################################################################################################################*/
+	//------------------------------------------------------------
+	// 쿠폰정보 데이터 처리 부분
+	//------------------------------------------------------------	
+	function real_couponinfo(){
+
+		var tt = 0;
+		if (tt == 1){
+			$("#coupon_data").attr("action", "./real_coupon_ajax_info.asp");
+			$("#coupon_data").submit();
+		}else{
+			$.ajax({
+				async: false,
+				type: "post",
+				url : "real_coupon_ajax_info.asp",
+				data : $("#coupon_data").serialize(),
+				dataType : "html",
+				success: function(obj){
+					$("#couponinfo_view").html(obj);	
+				},
+				error: function(xhr, option, error){
+					  alert(xhr.status+" | "+error); //오류코드 | 오류내용
+				}
+				/*error : function(success){
+					meg = "서버와 통신중 에러가 발생하였습니다."
+					alert("처리결과 : "+meg);
+				}*/
+			});
+		}
+	}
+
+	function real_coupon_greenfee(w){
+		var sel;
+		
+		//
+		switch(w){
+			case 'M':
+				sel = $("#coupon_modify_info");
+				break;
+			case 'U':
+				sel = $("#coupon_update_info");
+				break;
+			case 'I':
+				sel = $("#coupon_insert_info");
+				break;
+		}
+
+		var greenfee_base = $("#cc").val();
+		var greenfee_dis  = $("#coupon_greenfee_dis").val(); 
+		var greenfee = 0;
+		//alert(greenfee_base);
+		//alert(greenfee_dis);
+
+		if (parseInt(greenfee_base) <= parseInt(greenfee_dis) || parseInt(greenfee_dis) == 0 ){
+			greenfee = greenfee_base;
+		}else{
+			greenfee =greenfee_dis;
+		}
+
+		var greenfee_html = "";
+
+		var cpon_greenfee = sel.find("option:selected").attr("cpon_greenfee");
+
+		if(cpon_greenfee != null){
+			greenfee_html ="<span style='text-decoration:line-through;color:#ff3333;'>"+addComma(greenfee)+"</span>&nbsp;☞&nbsp;"+addComma(cpon_greenfee)+"";
+		}else{
+			greenfee_html =""+addComma(greenfee)+""
+		}
+		
+		//
+		switch(w){
+			case 'M':
+				$("#info_greenfee").html(greenfee_html);
+				break;
+			case 'U':
+				$("#bookg_greenfee").html(greenfee_html);
+				break;
+			case 'I':
+				$("#bookg_greenfee").html(greenfee_html);
+				break;
+		}		
+	}	
+
+	/*##################################################################################################################################################################*/
+	//------------------------------------------------------------
+	// 위임예약 가능여부 체크 처리 부분
+	//------------------------------------------------------------	
+	function authorize_check(){
+
+		var count = 0;
+
+		count = $("input[name='ref_temp_check']:checked").length;
+/*
+	
+*/
+
+	
+		//
+		if (count == 1){
+			//
+			// 위임가능 여부 체크함
+			$("#ref_pointdate").val($("#pointdate").val());
+			$("#ref_openyn").val($("#openyn").val());
+			$("#ref_dategbn").val($("#dategbn").val());
+			$("#ref_pointid").val($("#pointid").val());			
+			$("#ref_pointtime").val($("#pointtime").val());
+			$("#ref_pointname").val($("#pointname").val());
+
+			var actionurl = "./real_RefCheck_Proc.asp";
+
+			var tt = 0;
+			if (tt == 1){
+				$("#ref_form").attr("action", actionurl);
+				$("#ref_form").submit();
+			}else{
+				$.ajax({
+					async: false,
+					type: "POST",
+					url : actionurl,
+					data : $("#ref_form").serialize(),
+					dataType : "json",
+					success:function(success){
+						if(success.result == "OK"){
+							// 성공처리	
+							//alert("성공...");
+							if (count == 1){
+								//타임변경
+								$("input[name='ref_temp_check']").prop("checked",true);
+							}else{
+								//타임변경
+								$("input[name='ref_temp_check']").prop("checked",false);
+							}
+						}else{
+							// 에러처리
+							alert(unescape(success.gomsg));
+							$("input[name='ref_temp_check']").prop("checked",false);
+						}
+					},
+					error: function(xhr, option, error){
+						  alert(xhr.status+" | "+error); //오류코드 | 오류내용
+					}
+					/*error : function(success){
+						meg = "서버와 통신중 에러가 발생하였습니다."
+						alert("처리결과 : "+meg);
+					}*/
+				});
+			}
+		}
+	
+	}	
+
+
+	/*##################################################################################################################################################################*/
+	//------------------------------------------------------------
+	// 현재세팅값으로 다시 로딩 작업 진행.
+	//------------------------------------------------------------	
+	function fnReload(cal, time){
+		//alert(cal+" | "+time);
+		// 기존값 가져오기	
+		var prevDate = $("#chang_prevDate").val();
+		var nowDate  = $("#chang_nowDate").val();
+		var nextDate = $("#chang_nextDate").val();
+		var pointdate = $("#toDay").val();
+
+		// 카렌더 호출
+		if (cal == "T"){
+			calendar_change(prevDate, nowDate, nextDate, pointdate)
+		}		
+		// 타임리스트
+		if (time == "T"){
+			timelist_select("");
+		}
+		// 모달초기화
+		resetmodal();
+	}
+
+	//------------------------------------------------------------
+	// 모달 초기화 처리 부분
+	//------------------------------------------------------------	
+	function resetmodal(){
+		//
+		
+			$("input[name='ref_temp_check']").prop("checked",false);
+			$("#data_ref_name").val("");
+			$("#data_ref_tel1").val("");
+			$("#data_ref_tel2").val("");
+			$("#data_ref_tel3").val("");
+			$("#ref_name").val("");
+			$("#ref_tel1").val("");
+			$("#ref_tel2").val("");
+			$("#ref_tel3").val("");
+		
+	}
+	
+	//------------------------------------------------------------
+	// 카렌더 처리 부분
+	//------------------------------------------------------------	
+	// 달렬변경 부분 (이전달, 현재달, 다음달, 선택날짜)
+	function calendar_change(prevDate, nowDate, nextDate, pointdate){
+		//alert(prevDate +" | "+nowDate +" | "+nextDate +" | "+pointdate +"");
+		
+		// 변경값 세팅 부분
+		$("#chang_prevDate").val(prevDate);
+		$("#chang_nowDate").val(nowDate);
+		$("#chang_nextDate").val(nextDate);
+		$("#toDay").val(pointdate)
+		
+		// 달력 갯수 세팅 부분
+		var scnt = 2;
+		
+		// 달력 세팅 부분
+		if (scnt == 3){
+			// 달력호출
+			calendar_view(prevDate, 1)
+			calendar_view(nowDate, 2)
+			calendar_view(nextDate, 3)
+		}else if (scnt == 2){
+			// 달력호출
+			calendar_view(nowDate, 1)
+			calendar_view(nextDate, 2)
+		}else{
+			// 달력호출
+			calendar_view(nowDate, 1)
+		}
+	}
+
+	// 달력 세팅 부분
+	function calendar_view(sdate, cid){
+
+		//alert(sdate +" | "+cid +"");
+	
+		var actionurl = "";
+
+		if (sdate != ""){ 
+			$("#schDate").val(sdate);
+		}
+		$("#calnum").val(cid);
+		
+		//
+	
+		actionurl = "./real_calendar_ajax_view.asp";
+		
+		
+		var tt = 0;
+		if (tt == 1){
+			$("#listform_calender").attr("action", actionurl);
+			$("#listform_calender").submit();
+		}else{
+			$.ajax({
+				async: false,
+				type: "post",
+				url : actionurl,
+				data : $("#listform_calender").serialize(),
+				dataType : "html",
+				success: function(obj){
+					$("#calendar_view_ajax_"+cid+"").html(obj);	
+				},
+				error: function(xhr, option, error){
+					  alert(xhr.status+" | "+error); //오류코드 | 오류내용
+				}
+				/*error : function(success){
+					meg = "서버와 통신중 에러가 발생하였습니다."
+					alert("처리결과 : "+meg);
+				}*/
+			});
+		}
+	}
+
+	/*##################################################################################################################################################################*/
+	//------------------------------------------------------------
+	// 타임리스트 데이터 처리 부분
+	//------------------------------------------------------------
+	// 타임리스트 호출 부분
+	function timefrom_change(pointdate, openyn, dategbn, courseid, time, atype, bookgtype){
+		//alert(pointdate+" | "+openyn+" | "+dategbn+" | "+courseid+" | "+time+" | "+atype+" | "+bookgtype)
+		// 카렌더에 날자변경 세팅 부분
+		$("#toDay").val(pointdate)
+		//alert($("#toDay").val());
+
+		// 초기화
+		if (pointdate == ""){ pointdate = $("#time_pointdate").val() }
+		if (openyn == ""){ openyn = $("#time_openyn").val() }
+		if (dategbn == ""){ dategbn = $("#time_dategbn").val() }
+		if (courseid == ""){ courseid = $("#time_courseid").val() }
+		if (time == ""){ time = $("#time_choice_time").val() }
+		if (time == ""){ time = "00" }
+
+		// 변경여부 확인후 CSS처리
+		if (pointdate != $("#time_pointdate").val()){
+			
+			// 처리
+			$("#time_pointdate").val(pointdate);
+			$("#time_openyn").val(openyn);
+			$("#time_dategbn").val(dategbn);
+			$("#time_choice_time").val(time);
+
+			
+			
+			// 날짜가 변경되어서 달력도 변경함
+			fnReload("T", "");
+		}
+
+		// 처리
+		$("#time_pointdate").val(pointdate);
+		$("#time_openyn").val(openyn);
+		$("#time_courseid").val(courseid);
+		$("#time_dategbn").val(dategbn);
+		$("#time_choice_time").val(time);
+
+		//
+		if (atype != "T"){
+			default_subcmd (atype, pointdate, openyn, dategbn)
+		}else{
+			timefrom_view();
+		}
+
+
+		// URL 해쉬처리 부분...
+		location.hash = "pointdate="+$("#time_pointdate").val()+"&courseid="+$("#time_courseid").val()+"&openyn="+$("#time_openyn").val()+"&dategbn="+$("#time_dategbn").val()+"&choice_time="+$("#time_choice_time").val()+"&settype="+atype+"&prevDate="+$("#chang_prevDate").val()+"&nowDate="+$("#chang_nowDate").val()+"&nextDate="+$("#chang_nextDate").val()+"";
+
+	}
+
+	function timefrom_view(){	
+
+		var tt = 0;
+		
+		//if (atype != ""){ tt = 1 };
+
+		if (tt == 1){
+			$("#listform_timeform").attr("action", "./real_timeinfo_ajax_from.asp");
+			$("#listform_timeform").submit();
+		}else{
+			$.ajax({
+				async: false,
+				type: "post",
+				url : "./real_timeinfo_ajax_from.asp",
+				data : $("#listform_timeform").serialize(),
+				dataType : "html",
+				success: function(obj){
+					$("#input_ajax").html(obj);
+					// 사이즈 재설정부분
+					getgolfreschagsize();
+				},
+				error: function(xhr, option, error){
+					  alert(xhr.status+" | "+error); //오류코드 | 오류내용
+				}
+				/*error : function(success){
+					meg = "서버와 통신중 에러가 발생하였습니다."
+					alert("처리결과 : "+meg);
+				}*/
+			});
+		}
+	}
+
+
+	/*##################################################################################################################################################################*/
+	//------------------------------------------------------------
+	// 기본 데이터 처리 부분
+	//------------------------------------------------------------
+	function default_subcmd (atype, pointdate, openyn, dategbn){
+
+		//alert(atype+" | "+pointdate+" | "+openyn+" | "+dategbn)
+		// 처리
+		var actionurl = ""
+
+	
+		actionurl =  "./nodate_ajax_view.asp"
+	
+
+		//alert($("#toDay").val()+"  |  "+pointdate);
+		// 변경여부 확인후 CSS처리
+		if (pointdate != $("#toDay").val()){
+			// 오늘 날짜세팅부분
+			$("#toDay").val(pointdate)
+
+			// 날짜가 변경되어서 달력도 변경함
+			fnReload("T", "");
+		}else{
+			// 오늘 날짜세팅부분
+			$("#toDay").val(pointdate)
+		}
+
+		// 처리
+		$("#input_pointdate").val(pointdate);
+		$("#input_openyn").val(openyn);
+		$("#input_dategbn").val(dategbn);
+		$("#input_settype").val(atype);
+
+		// 입력폼 호출
+		default_input(actionurl, atype);
+
+
+		// URL 해쉬처리 부분...
+		location.hash = "pointdate="+$("#input_pointdate").val()+"&courseid=0&openyn="+$("#input_openyn").val()+"&dategbn="+$("#input_dategbn").val()+"&choice_time=0&settype="+atype+"&prevDate="+$("#chang_prevDate").val()+"&nowDate="+$("#chang_nowDate").val()+"&nextDate="+$("#chang_nextDate").val()+"";
+
+	}
+
+	function default_input(actionurl, atype){
+		
+
+		var tt = 0;
+		
+		// 다음페이지 이동으로 보여주게 사용함
+		if (atype == "P" || atype == "PL" || atype == "PW"){ tt = 1 };
+
+		if (tt == 1){
+			$("#inputform").attr("action", actionurl);
+			$("#inputform").submit();
+		}else{
+			$.ajax({
+				async: false,
+				type: "post",
+				url : actionurl,
+				data : $("#inputform").serialize(),
+				dataType : "html",
+				success: function(obj){
+					$("#input_ajax").html(obj);
+					// 사이즈 재설정부분
+					getgolfreschagsize();
+				},
+				error: function(xhr, option, error){
+					  alert(xhr.status+" | "+error); //오류코드 | 오류내용
+				}
+				/*error : function(success){
+					meg = "서버와 통신중 에러가 발생하였습니다."
+					alert("처리결과 : "+meg);
+				}*/
+			});
+		}
+	}
+
+	
+	
+	/*##################################################################################################################################################################*/
+	//------------------------------------------------------------
+	// Div 달력 팝업
+	//------------------------------------------------------------
+	function popDivCalendrShow(totalcnt,courseinfo,e, calltype) {
+		//alert("popDivCalendrShow");
+		var evt = e ? e : window.event;
+		var posx=0;
+		var posy=0;
+
+		if (evt.pageX || evt.pageY) 
+		{ 
+			// pageX/Y 표준 검사
+			posx = evt.pageX +8;
+			posy = evt.pageY +16;
+		} 
+		else if (evt.clientX || evt.clientY) 
+		{ 
+			//clientX/Y 표준 검사 Opera
+			posx = evt.clientX +10;
+			posy = evt.clientY +20;
+			if (window.event) 
+			{ 
+				// IE 여부 검사
+				//posx += document.body.scrollLeft;
+				//posy += document.body.scrollTop;
+				
+				posx += document.documentElement.scrollLeft;
+				posy += document.documentElement.scrollTop;
+			}
+		}
+		//alert((posx)+"|"+(posy));
+		var cnt = "2"		
+		var cntinfo = courseinfo.split("|");  
+		//
+
+		if (calltype == "L"){
+		}else{
+			//타이틀
+			$("#popcalendardiv #bookgtitle").empty().append("[예약가능팀수("+totalcnt+"팀)]");
+			//
+			for (i=1; i<=cnt; i++)
+			{
+				$("#popcalendardiv #bookgcnt"+i+"").empty().append("- "+cntinfo[i-1]+"");
+			}
+			$("#popcalendardiv").css("top",(posy) + "px").css("left", (posx) + "px").show();
+		}
+
+	}
+
+	function popDivCalendrHide() {
+		$("#popcalendardiv").hide();
+	}
+
+	//------------------------------------------------------------
+	// Div 타임 팝업
+	//------------------------------------------------------------
+	function popDivTimeShow(bookgdate,bookgcourse,courseline, greepe, greepeinfo,e) {
+		//alert("popDivTimeShow");
+		var evt = e ? e : window.event;
+		var posx=0;
+		var posy=0;
+
+		if (evt.pageX || evt.pageY) 
+		{ 
+			// pageX/Y 표준 검사
+			posx = evt.pageX + 8;
+			posy = evt.pageY + 16;
+		} 
+		else if (evt.clientX || evt.clientY) 
+		{ 
+			//clientX/Y 표준 검사 Opera
+			posx = evt.clientX + 10;
+			posy = evt.clientY + 20;
+			if (window.event) 
+			{ 
+				// IE 여부 검사
+				//posx += document.body.scrollLeft;
+				//posy += document.body.scrollTop;
+				
+				posx += document.documentElement.scrollLeft;
+				posy += document.documentElement.scrollTop;
+			}
+		}
+		posx = posx - 190;
+		//alert((posx)+"|"+(posy));
+
+		$("#popbookgtimediv #bookgdate").empty().append("예약일자 : "+bookgdate+"");
+		$("#popbookgtimediv #bookgcourse").empty().append("예약정보 : "+bookgcourse+"");	
+		$("#popbookgtimediv #courseline").empty().append("연결코스 : "+courseline+"");
+		if (greepe != ""){
+			$("#popbookgtimediv #greepe").empty().append("그린피 : "+greepe+"");	
+		}
+		if (greepeinfo != ""){
+			$("#popbookgtimediv #greepeinfo").empty().append(""+greepeinfo+"");	
+		}
+		$("#popbookgtimediv").css("top",(posy) + "px").css("left", (posx) + "px").show();
+	}
+
+	function popDivTimeHide() {
+		$("#popbookgtimediv").hide();
+	}
+
+
+	/*##################################################################################################################################################################*/
+
+	//
+	function reservation_parse_hash(){
+
+		var loh = location.href.indexOf("#");
+		var d = new Date();
+		
+		//
+		var pointdate = "";
+		var openyn    = "";
+		var dategbn   = "";
+		var courseid  = "";
+		var time      = "";
+		var atype     = "";
+		//
+		var prevDate  = "";
+		var nowDate   = "";
+		var nextDate  = "";
+
+		if(loh != -1){
+			var tmp = location.href.substr(loh + 1).split("&");
+			for(var i=0; i<tmp.length; i++){
+				var loe = tmp[i].indexOf("=");
+				if(loe != -1){
+					var val = decodeURIComponent(tmp[i].substr(loe + 1));
+					if(val != ''){
+						switch(tmp[i].substr(0, loe)){
+							case "pointdate":
+								pointdate = val;
+								break;
+							case "openyn":
+								openyn = val;
+								break;
+							case "dategbn":
+								dategbn = val;
+								break;
+							case "courseid":
+								courseid = val;
+								break;
+							case "time":
+								time = val;
+								break;
+							case "settype":
+								atype = val;
+								break;
+							case "prevDate":
+								prevDate = val;
+								break;
+							case "nowDate":
+								nowDate = val;
+								break;
+							case "nextDate":
+								nextDate = val;
+								break;
+						}
+					}
+				}
+			}
+
+			/**********************************************
+			*  처리 부분....
+			**********************************************/
+			// 달력 처리 부분
+			calendar_change(prevDate,nowDate,nextDate,pointdate);
+			
+			// 리스트 처리 부분....
+			if (atype == "T" || atype == "R"){
+				// 타임리스트 처리 부분				
+				timefrom_change(pointdate, openyn, dategbn, courseid, time, "T");
+			}else{
+				// 입력폼은 처음에 는 호출 안함
+				default_subcmd (atype, pointdate, openyn, dategbn);
+			}
+		}	
+	}
+
+/*##################################################################################################################################################################*/
+//자동실행 - body onload의 대체
+$(function(){
+	//
+	var loh = location.href.indexOf("#");
+	// 해쉬여부 판단
+	if(loh != -1 && "T" == "T"){
+		// URL해쉬 처리한값 처리
+		reservation_parse_hash()
+	}else{
+		// 달력 처리 부분
+		calendar_change('202111','202112','202201','20211226');
+		// 타임리스트 처리 부분
+	  
+		timefrom_change('20211226', '1', '1', '0', '00', 'T');
+	
+		//default_subcmd ('L', '20120922', '1', '2');
+	}
+	
+	// 코로나 4단계
+	function covid_close(){
+		$(".covid_popup").hide();
+	}
+
+});
+
+//-->
+</script>
+
+<form name="chang_calender" id="chang_calender" method="post">
+	<input type="hidden" id="chang_prevDate" name="prevDate">
+	<input type="hidden" id="chang_nowDate" name="nowDate">
+	<input type="hidden" id="chang_nextDate" name="nextDate">
+</form>
+
+<form name="listform_calender" id="listform_calender" method="post">
+	<input type="hidden" id="golfrestype" name="golfrestype" value="real">
+	<input type="hidden" id="schDate" name="schDate" value="202112">
+	<input type="hidden" id="usrmemcd" name="usrmemcd" value="10">
+	<input type="hidden" id="toDay" name="toDay" value="20211226">	
+	<input type="hidden" id="calnum" name="calnum">
+</form>
+
+<form name="listform_timeform" id="listform_timeform" method="post">
+	<input type="hidden" id="time_cmrtype" name="cmrtype" value="N">	
+	<input type="hidden" id="time_golfrestype" name="golfrestype" value="real">	
+	<input type="hidden" id="time_courseid" name="courseid" value="0">
+	<input type="hidden" id="time_usrmemcd" name="usrmemcd" value="10">
+	<input type="hidden" id="time_pointdate" name="pointdate" value="20211226">
+	<input type="hidden" id="time_openyn" name="openyn" value="1">
+	<input type="hidden" id="time_dategbn" name="dategbn" value="1">
+	<input type="hidden" id="time_choice_time" name="choice_time" value="00">
+	<input type="hidden" id="time_cssncourseum" name="cssncourseum">
+	<input type="hidden" name="inputtype" value="I">
+</form>
+
+<form  id="dataform" name="dataform" method="POST">
+	<input type="hidden" name="cmd" id="data_cmd"  value="ins"/>
+	<input type="hidden" name="cmval" id="cmval" value="0"/>	
+	<input type="hidden" name="cmkind" id="cmkind"  value="">
+	<input type="hidden" name="cmrtype" id="cmrtype"  value="N">	
+	<input type="hidden" name="calltype" id="calltype" value="AJAX"/>
+	<input type="hidden" name="gonexturl" id="gonexturl" value="./my_golfreslist.asp"/>
+	<input type="hidden" id="backurl" name="backurl" value="">
+	<input type="hidden" id="pointdate" name="pointdate">
+	<input type="hidden" id="openyn" name="openyn">
+	<input type="hidden" id="dategbn" name="dategbn">
+	<input type="hidden" id="pointid" name="pointid">
+	<input type="hidden" id="pointname" name="pointname">
+	<input type="hidden" id="pointtime" name="pointtime">
+
+	<input type="hidden" id="data_golfuser_name" name="golfuser_name" value="">
+
+	<input type="hidden" id="data_hand_tel1" name="hand_tel1">
+	<input type="hidden" id="data_hand_tel2" name="hand_tel2">
+	<input type="hidden" id="data_hand_tel3" name="hand_tel3">
+	<input type="hidden" id="data_bookg_cnt" name="join_bookg_cnt">
+
+	<input type="hidden" id="pointhole" name="pointhole">
+	<input type="hidden" id="pointpartcd" name="pointpartcd">
+	<input type="hidden" id="inwon" name="inwon">
+
+
+	<input type="hidden" id="data_ref_check" name="ref_check">
+	<input type="hidden" id="data_ref_name" name="ref_name">
+	<input type="hidden" id="data_ref_tel1" name="ref_tel1">
+	<input type="hidden" id="data_ref_tel2" name="ref_tel2">
+	<input type="hidden" id="data_ref_tel3" name="ref_tel3">
+
+	<input type="hidden" id="data_coupon_info" name="coupon_info">
+
+
+	<input type="hidden" id="data_self_r_yn" name="self_r_yn">
+	<input type="hidden" id="data_self_c_yn" name="self_c_yn">
+
+
+	<input type="hidden" id="data_res_gubun" name="res_gubun" />
+
+
+	<input type="hidden" id="virtual_tf" name="virtual_tf"/>
+
+	<input type="hidden" id="impend_time_yn" name="impend_time_yn"/>
+
+
+
+</form>
+
+
+<form  id="coupon_data" name="coupon_data" method="POST">
+<input type="hidden" id="coupon_pointdate" name="pointdate" value="20211226">
+<input type="hidden" id="coupon_openyn" name="openyn" value="1">
+<input type="hidden" id="coupon_dategbn" name="dategbn" value="1">
+<input type="hidden" id="coupon_pointid" name="pointid" value="0">
+<input type="hidden" id="coupon_pointtime" name="pointtime">
+<input type="hidden" id="coupon_bookgseq" name="bookgseq" value="0">
+<input type="hidden" id="coupon_memberno" name="memberno" value="">
+<input type="hidden" id="coupon_usrmemcd" name="usrmemcd" value="10">
+<input type="hidden" id="coupon_oldpointtime" name="oldpointtime">
+<input type="hidden" id="coupon_oldpointid" name="oldpointid">
+<input type="hidden" id="coupon_oldcouponkey" name="oldcouponkey">
+<input type="hidden" id="coupon_inputtype" name="inputtype" value="I">
+
+<input type="hidden" id="coupon_greenfee_base" name="greenfee_base">
+<input type="hidden" id="coupon_greenfee_dis" name="greenfee_dis">
+</form>
+
+<form name="inputform" id="inputform" method="post">
+	<input type="hidden" id="input_cmrtype" name="cmrtype" value="N">	
+	<input type="hidden" id="input_backurl" name="backurl" value="/GolfRes/onepage/real_reservation.asp?">
+	<input type="hidden" id="input_pointdate" name="pointdate" value="20211226">
+	<input type="hidden" id="input_openyn" name="openyn">
+	<input type="hidden" id="input_dategbn" name="dategbn">
+	<input type="hidden" id="input_settype" name="settype">
+</form>
+
+
+
+
+<form name="ref_form" id="ref_form" method="post">
+<input type="hidden" name="cmd" id="ref_cmd" value="ins"/>
+<input type="hidden" name="cmval" id="ref_cmval" value="0"/>
+<input type="hidden" name="calltype" id="ref_calltype" value="AJAX"/>
+<input type="hidden" id="ref_pointdate" name="pointdate" value="20211226"/>
+<input type="hidden" id="ref_openyn" name="openyn" value="1"/>
+<input type="hidden" id="ref_dategbn" name="dategbn" value="1"/>
+<input type="hidden" id="ref_pointid" name="pointid" value="0"/>
+<input type="hidden" id="ref_pointtime" name="pointtime" value=""/>
+<input type="hidden" id="ref_pointname" name="pointname" value=""/>
+<input type="hidden" id="ref_memberno" name="memberno" value=""/>
+<input type="hidden" id="ref_usrmemcd" name="usrmemcd" value="10"/>
+<input type="hidden" id="ref_oldpointid" name="oldpointid" value=""/>
+<input type="hidden" id="ref_oldpointtime" name="oldpointtime" value=""/>
+<input type="hidden" id="ref_oldbookgGbn" name="oldbookgGbn" value=""/>
+<input type="hidden" id="ref_oldbookgseq" name="bookgseq" value=""/>
+</form>
+
+
+<!-- 코로나 4단계 팝업 -->
+<div class="covid_popup">
+	<div class="popup_content">
+    	<p>코로나 4단계로 인해 해당 티타임은<br/>2인 play만 가능합니다</p>
+        <a href="javascript:covid_close();">확인</a>
+    </div>
+</div>
+<!-- //코로나 4단계 팝업 -->
+<script>
+	function covid_close(){
+		$(".covid_popup").hide();
+	}
+</script>
+
+
+<!-- //예약팝업 영역-->
+<div id="modalPop" style="display: none;">
+	<div id="cm_orange">
+		<div id="cm_reservation">
+			<div id="cm_popup">
+				<div id="cm_popup_title">
+					<div class="cm_btn"><a href="" class="closeDOMWindow" title="닫기"><img src="/image/cm_reservation/popup_btn_close.png" class="block" alt="" /></a></div>
+					<div class="cm_tit"><img src="/image/cm_reservation/popup_title_reservation.png" class="block" alt="" /></div>
+				</div>
+				<div id="cm_popup_content" style="">
+					<div id="cm_popup_content_total" class="clear">
+						<div id="cm_popup_content_01">
+							<div class="cm_popup_content_content">
+								<table>
+									<colgroup>
+										<col style="width:1%;" />
+										<col style="width:auto;" />
+									</colgroup>
+									<tr>
+										<th>
+											<span class="cm_dot"><img src="/image/cm_reservation/th_tlscjdwk.png" alt="" /></span>
+										</th>
+										<td class="cm_tlscjdwk">
+										게스트
+										</td>
+									</tr>
+									<tr>
+										<th>
+											<span class="cm_dot"><img src="/image/cm_reservation/th_gosemvhs.png" alt="" /></span>
+										</th>
+										<td  class="cm_gosemvhs">
+									
+											<input type="hidden" name="hand_tel1" id="hand_tel1" value="" />
+											<input type="hidden" name="hand_tel2" id="hand_tel2" value="" />
+											<input type="hidden" name="hand_tel3" id="hand_tel3" value="" />
+											 -  - 
+										</td>
+									</tr>
+									<tr>
+										<th>
+											<span class="cm_dot"><img src="/image/cm_reservation/th_dPdirdlfwk.png" alt="" /></span>
+										</th>
+										<td class="cm_dPdirdlfwk">
+											<span id="bookg_kordate">2012년 8월 22일 (수요일)</span>
+										</td>
+									</tr>
+									<tr>
+										<th>
+											<span class="cm_dot"><img src="/image/cm_reservation/th_zhtmghftlrks.png" alt="" /></span>
+										</th>
+										<td class="cm_zhtmghftlrks">
+											<span id="bookg_cours">코스</span> / <span id="bookg_hole">0홀</span> / <span id="bookg_time">00:00</span>
+										</td>
+									</tr>
+								
+								</table>
+							</div>
+						</div>
+					
+						<div id="cm_popup_content_02">
+							<div class="cm_popup_content_content">
+								<table>
+									<colgroup>
+										<col style="width:78px;" />
+										<col style="width:auto;" />
+									</colgroup>
+									<tr>
+										<th>
+											<span class="cm_dot"><img src="/image/cm_reservation/th_znvhstkdyd.png" alt="" /></span>
+										</th>
+										<td class="cm_znvhstkdyd">
+											<div class="clear">
+												<div class="cm_input" id="couponinfo_view">
+												</div>
+											</div>
+										</td>
+									</tr>
+									<tr>
+										<th>
+											<span class="cm_dot"><img src="/image/cm_reservation/th_rmflsvl.png" alt="" /></span>
+										</th>
+										<td class="cm_input">
+											<span id="bookg_greenfee">0</span>
+										</td>
+									</tr>
+									<tr>
+										<th>
+											<span class="cm_dot">캐디피</span>
+										</th>
+										<td class="cm_input">
+											<span id="bookg_caddyfee">0</span>
+										</td>
+									</tr>
+							
+									<tr>
+										<td colspan="2" class="cm_input" id ="inwon">
+											<span id="inwon_txt"></span>
+										</td>
+									</tr>
+								</table>
+							</div>
+						</div>
+					
+						<div id="cm_popup_refcontent" style="display:none;">
+							<div class="cm_popup_content_content">
+								<table>
+									<colgroup>
+										<col style="width:78px;" />
+										<col style="width:auto;" />
+									</colgroup>
+									<tr>
+										<th>
+											<span class="cm_dot"><img src="/image/cm_reservation/th_dnldladPdir.png" alt="위임예약" /></span>
+										</th>
+										<td class="cm_dnldladPdir">
+										<div class="clear">  
+											<input type="checkbox" name="ref_temp_check" id="ref_temp_check" class="check" value="1"  onclick="authorize_check();">
+										</div>
+										</td>
+									</tr>
+									<tr>
+										<td colspan="2"><span class="cm_dot red">※ 위임예약시 반드시 체크를 해주셔야 합니다.</span></td>
+									</tr>									
+									<tr>
+										<th>
+											<span class="cm_dot"><img src="/image/cm_reservation/th_dnldladPdir_dPdiraud.png" alt="위임예약명" /></span>
+										</th>
+										<td class="cm_tlscjdwk">
+										<div class="clear">
+											<div class="cm_input">
+												<input name="ref_name" id="ref_name" value="" maxlength="20" style="width:120px;"/>
+											</div>											
+										</div>
+										</td>
+									</tr>
+									<tr>
+										<th>
+											<span class="cm_dot"><img src="/image/cm_reservation/th_dnldladPdir_dusfkrcj.png" alt="위임연락처" /></span>
+										</th>
+										<td  class="cm_gosemvhs">
+											<div class="clear">
+												<div class="cm_input">
+													<select name="ref_tel1" id="ref_tel1" style="width:60px;">
+														<option value='010'>010</option><option value='011'>011</option><option value='016'>016</option><option value='017'>017</option><option value='018'>018</option><option value='019'>019</option>
+													</select>
+												</div>
+												<div><img src="/image/cm_reservation/td_dash.png" class="block" alt="" /></div>
+												<div class="cm_input">
+													<input name="ref_tel2" id="ref_tel2" value="" maxlength="4" onKeyUp="JavaScript:validNum(this)" style="width:54px;" />
+												</div>
+												<div><img src="/image/cm_reservation/td_dash.png" class="block" alt="" /></div>
+												<div class="cm_input">
+													<input name="ref_tel3" id="ref_tel3" value="" maxlength="4" onKeyUp="JavaScript:validNum(this)" style="width:54px;" />
+												</div>
+											</div>
+										</td>
+									</tr>
+								
+									<tr>
+										<td colspan="2"><span class="cm_dot blue">※ 사전위임없이 내장시 요금대우가 불가합니다.</span></td>
+									</tr>
+								
+								</table>
+							</div>
+						</div>
+					
+						<!-- 부가정보 -->
+						<div id="cm_popup_add_explanation" style="border-top:1px solid #e1e1e1;">
+							<div class="cm_popup_content_content">
+								<table>
+									<colgroup>
+										<col style="width:auto;" />
+									</colgroup>
+									<tr>
+										<td colspan="2">
+											<span class="cm_dot">
+												※ 동반자 전원 인터넷 회원가입 부탁드립니다.
+												<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;당일 회원가입은 비회원가 적용되므로
+												<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;미리 가입해주시기 바랍니다.
+											</span>
+										</td>
+									</tr>
+								</table>
+							</div>
+						</div>
+						
+					
+
+
+					</div>
+					
+					<div class="cm_popup_content_btn clear">
+						<div class="cm_ok">
+							<a href="javascript:subcmd1('R');" title="예약"><img src="/image/cm_reservation/popup_btn_ok.png" class="block" alt="" /></a>
+						</div>
+						<div class="cm_cancle">
+							<a href="" class="closeDOMWindow" title="취소"><img src="/image/cm_reservation/popup_btn_cancle.png" class="block" alt="" /></a>
+						</div>
+					</div>
+				</div>
+		
+			</div>
+		</div>
+	</div>
+</div>
+<!-- //예약팝업 영역-->
+
+</head>
+
+<!-- <body id="SUB"> -->
+<body>
+<script language="JavaScript" type="text/JavaScript">
+//<!--
+	//
+	var gnb_code1 = "reservation";
+	var lnb_code1 = "reservation";
+	//var gnbIdx = Number(0); 
+
+	//
+	var gnb_code2 = "reservation_live";
+	var lnb_code2 = "reservation_live";
+	//var gnb2Idx = Number(0); 
+
+	//
+	var gnb_code3 = "reservation_live";
+	var lnb_code3 = "reservation_live";
+	//var gnb2Idx = Number(-1);
+
+//-->
+</script>
+	
+<div id="wrap" class="sub">
+	<div class="skip_navi">
+		<ul>
+			<li><a href="#gnb">GNB 바로가기</a></li>
+			<li><a href="#body">본문 바로가기</a></li>
+			<li><a href="#footer">하단 바로가기</a></li>
+		</ul>
+	</div>
+
+	<!-- 헤더 -->
+	<div id="header">
+		<div class="head">
+			<h1><a href="/"><img src="/image/common/logo.png" alt="인천 그랜드CC" /></a></h1>
+
+			<div class="login_area">
+				<a href="/">홈</a> <img src="/image/common/line_top.png" alt="" />
+			
+				<!-- 로그인 전 -->
+				<a href="/login/login.asp">로그인</a> <img src="/image/common/line_top.png" alt="" />
+				<a href="/memberInfor/joinTerms.asp">회원가입</a> <img src="/image/common/line_top.png" alt="" />
+				<!-- /로그인 전 -->
+			
+				<a href="/pagesite/use/location.asp">오시는길 </a> <!--<img src="/image/common/line_top.png" alt="" />
+				<a href="/pagesite/sitemap/sitemap.asp">사이트맵</a>-->		
+			</div>
+
+			<!-- gnb -->
+			<div class="gnb">				
+				<ul> 
+<li class="gnb01" id="gnb_reservation"> 
+							<h2><a href="/pagesite/reservation/live.asp"  >인터넷예약</a></h2> 
+							<ul class="dep2"> 
+										<li class="g01_1" id="gnb2_reservation_live"><a href="/pagesite/reservation/live.asp"   class="g01_1   ">실시간예약</a></li> 
+										<li class="g01_5" id="gnb2_reservation_join"><a href="/pagesite/reservation/join_cal.asp"   class="g01_5   ">조인게시판</a></li> 
+										<li class="g01_6" id="gnb2_reservation_grouplive"><a href="/pagesite/reservation/group.asp"   class="g01_6   ">단체팀예약</a></li> 
+							</ul> 
+						</li> 
+						<li class="gnb02" id="gnb_use"> 
+							<h2><a href="/pagesite/use/guide.asp"  >이용안내</a></h2> 
+							<ul class="dep2"> 
+										<li class="g02_1" id="gnb2_use_charge"><a href="/pagesite/use/charge.asp"   class="g02_1   ">이용요금</a></li> 
+										<li class="g02_2" id="gnb2_use_reservation"><a href="/pagesite/use/reservation.asp"   class="g02_2   ">예약가이드</a></li> 
+										<li class="g02_3" id="gnb2_use_guide"><a href="/pagesite/use/guide.asp"   class="g02_3  long_type ">이용 및 위약규정</a></li> 
+										<li class="g02_4" id="gnb2_use_weather"><a href="/pagesite/use/weather.asp" target="_blank" title="새창열림" class="g02_4   ">날씨안내</a></li> 
+										<li class="g02_5" id="gnb2_use_location"><a href="/pagesite/use/location.asp"   class="g02_5   ">오시는길</a></li> 
+							</ul> 
+						</li> 
+						<li class="gnb03" id="gnb_information"> 
+							<h2><a href="/pagesite/information/notice.asp"  >공지&amp;이벤트</a></h2> 
+							<ul class="dep2"> 
+										<li class="g03_1" id="gnb2_information_notice"><a href="/pagesite/information/notice.asp"   class="g03_1   ">공지사항</a></li> 
+										<li class="g03_2" id="gnb2_information_event"><a href="/pagesite/information/event.asp"   class="g03_2   ">이벤트</a></li> 
+										<li class="g03_3" id="gnb2_information_honor"><a href="/pagesite/information/honor.asp"   class="g03_3   ">명예의전당</a></li> 
+										<li class="g03_4" id="gnb2_information_lost"><a href="/multi_board/site/board/list.asp?groupcode=LOST"   class="g03_4   ">분실물센터</a></li> 
+							</ul> 
+						</li> 
+						<li class="gnb04" id="gnb_course"> 
+							<h2><a href="/pagesite/course/intro.asp"  >코스정보</a></h2> 
+							<ul class="dep2"> 
+										<li class="g04_1" id="gnb2_course_intro"><a href="/pagesite/course/intro.asp"   class="g04_1   ">코스안내</a></li> 
+										<li class="g04_2" id="gnb2_course_guide"><a href="/pagesite/course/one/hole_01.asp"   class="g04_2   ">코스공략</a></li> 
+										<li class="g04_3" id="gnb2_course_gallery"><a href="/pagesite/course/gallery.asp"   class="g04_3   ">코스갤러리</a></li> 
+							</ul> 
+						</li> 
+						<li class="gnb05" id="gnb_club"> 
+							<h2><a href="/pagesite/club/intro.asp"  >클럽안내</a></h2> 
+							<ul class="dep2"> 
+										<li class="g05_1" id="gnb2_club_intro"><a href="/pagesite/club/intro.asp"   class="g05_1  long_type ">인천그랜드소개</a></li> 
+										<li class="g05_2" id="gnb2_club_ci"><a href="/pagesite/club/ci.asp"   class="g05_2   ">회사CI</a></li> 
+										<li class="g05_3" id="gnb2_club_facilities"><a href="/pagesite/club/facilities/front.asp"   class="g05_3   ">부대시설</a></li> 
+							</ul> 
+						</li> 
+						<li class="gnb06" id="gnb_lounge"> 
+							<h2><a href="/pagesite/reservation/confirm.asp"  >MY그랜드</a></h2> 
+							<ul class="dep2"> 
+										<li class="g06_1" id="gnb2_reservation_confirm"><a href="/pagesite/reservation/confirm.asp"   class="g06_1  long_type ">예약조회/변경</a></li> 
+										<li class="g06_2" id="gnb2_lounge_score"><a href="/pagesite/lounge/in.asp"   class="g06_2   ">스코어</a></li> 
+										<li class="g06_3" id="gnb2_lounge_point"><a href="/myContents/myPoint.asp"   class="g06_3  long_type ">포인트/쿠폰함</a></li> 
+										<li class="g06_4" id="gnb2_lounge_out"><a href="/pagesite/lounge/out.asp"   class="g06_4   ">위약현황</a></li> 
+										<li class="g06_5" id="gnb2_lounge_customer"><a href="/pagesite/lounge/customer.asp"   class="g06_5   ">고객의소리</a></li> 
+										<li class="g06_6" id="gnb2_lounge_info"><a href="/pagesite/lounge/info/edit.asp"   class="g06_6  long_type ">회원정보관리</a></li> 
+							</ul> 
+						</li> 
+ 
+					</ul>
+
+			</div>
+			<!-- /gnb -->
+		</div>
+		<div id="reservation_navi"></div><!-- 상단 이미지 -->
+		<!-- /헤더 -->
+	</div>
+	<!-- 상단 종료 -->
+
+		<!-- 바디 시작 -->
+		<!-- content -->
+	<div id="body">	
+		<div class="content_sub">	
+			<div class="content_sub_in">
+				<!-- 서브 메뉴 -->
+				<div class="lnb">				
+					<h2>
+						인터넷예약
+						<span>RESERVATION</span>
+					</h2>
+                     						<ul class="lnb_menu" id="reservation"> 
+ 
+ 							<li id="lnb_reservation_live"> 
+								<a href="/pagesite/reservation/live.asp" class="lnb_c01"  >실시간예약</a> 
+							</li> 
+							<li id="lnb_reservation_join"> 
+								<a href="/pagesite/reservation/join_cal.asp" class="lnb_c05"  >조인게시판</a> 
+							</li> 
+							<li id="lnb_reservation_grouplive"> 
+								<a href="/pagesite/reservation/group.asp" class="lnb_c06"  >단체팀예약</a> 
+							</li> 
+ 
+						</ul> 
+ 
+
+					<!-- <h2><img src="/image/reservation/tit_lnb.gif" alt="인터넷예약" /></h2>
+					<ul class="lnb_menu" id="club">
+						<li id="lnb_club_intro"><a href="#">클럽소개</a></li>
+						<li id="lnb_club_greet"><a href="#">인사말</a></li>
+						<li id="lnb_club_ci"><a href="#">오시는길</a></li>
+						<li id="lnb_club_facilities"><a href="#">주요연락처</a></li>
+						<li id="lnb_club_location"><a href="#">부대시설</a></li>
+					</ul> -->
+				</div>
+
+				<!-- 컨텐츠 -->
+				<div class="content">
+
+					<h3 class="tit_area">
+						<strong class="tit">실시간예약</strong>
+						<!-- history map -->
+						<span class="his_map">				
+							<a href="/">HOME</a> &gt;
+							<a href="/pagesite/reservation/live.asp">인터넷예약</a> &gt;
+							<a href="/pagesite/reservation/live.asp" class="on">실시간예약</a>
+						</span>
+					</h3>
+
+
+		<div id="content_body" class="clear">
+					<!-- 데이타 시작 -->
+	<div id="cm_orange">
+		<div id="cm_reservation">
+			
+			<div id="cm_body">
+				<div id="cm_reservation_total" class="clear">
+					<div id="cm_reservation_01">
+						<div id="cm_calendar">
+							<div class="cm_calendar_main_title">
+								<div class="cm_title clear">
+									<div class="cm_tit"><img src="/image/cm_reservation/main_title_date.png" class="block" alt="" /></div>
+								</div>
+								<div class="cm_side clear">
+									<!--
+									<div class="cm_navi_open clear">
+										<div class="cm_ico"></div>
+										<div class="cm_txt"><img src="/image/cm_reservation/state_open.png" class="block" alt="" /></div>
+									</div>									
+									-->
+									<div class="cm_navi_liv clear">
+										<div class="cm_ico"></div>
+										<div class="cm_txt"><img src="/image/cm_reservation/state_liv.png" class="block" alt="" /></div>
+									</div>
+									
+									<div class="cm_navi_event clear">
+										<div class="cm_ico"></div>
+										<div class="cm_txt"><img src="/image/cm_reservation/state_event.png" class="block" alt="" /></div>
+									</div>
+									
+									<div class="cm_navi_end clear">
+										<div class="cm_ico"></div>
+										<div class="cm_txt"><img src="/image/cm_reservation/state_end.png" class="block" alt="" /></div>
+									</div>
+								</div>
+							</div>
+							<div id="cm_calendar_small">
+								<div id="cm_calendar_small_total" class="clear">
+								<!-- //카렌더 영역-->
+								
+									<div id="cm_calendar_small_01">
+										<div id="calendar_view_ajax_1"></div>   
+									</div>
+									
+								
+									<div id="cm_calendar_small_02">
+										<div id="calendar_view_ajax_2"></div>   
+									</div>
+									
+								
+								<!-- //카렌더 영역-->
+								</div>
+							</div>
+						</div>
+<!--
+						<img style="margin:12px 0;" src="/image/common/phone_num.gif" alt="예약문의전화 031-887-8005" />
+						<a href="http://www.educar.co.kr/" target="_blank" title="새창열림" class="block">
+						<img src="/image/common/banner_k01.jpg" alt="고객이 다르면 보험료도 다릅니다! 고객만족도 Aa등급 획득(2012 소비자원 조사결과) The-K 손해보험" /></a>
+-->
+					</div>
+					<div id="cm_reservation_02">					
+						<div id="cm_time">
+							<!--입력폼 처리부분 -->
+								<div id="input_ajax"></div>
+							<!--입력폼 처리부분 -->
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+<!-- 데이타 종료 -->
+				</div>
+
+					<!-- quick -->
+					
+					<ul class="quick_menu" id="gotop">
+						<li><a href="/pagesite/reservation/live.asp" class="overimg"><img src="/image/common/q01.png" alt="인터넷예약" /></a></li>
+						<li><a href="/pagesite/reservation/confirm.asp" class="overimg"><img src="/image/common/q02.png" alt="예약확인" /></a></li>
+						<li><a href="/pagesite/use/charge.asp" class="overimg"><img src="/image/common/q03.png" alt="이용안내" /></a></li>
+						<li><a href="/pagesite/use/location.asp" class="overimg"><img src="/image/common/q04.png" alt="오시는길" /></a></li>
+					</ul>
+					<script type="text/javascript">
+					<!--						
+						$(window).bind('scroll', function() {
+							var curTop = $(this).scrollTop();
+							if(curTop > 290) {
+								$('#gotop').css({'position': 'fixed', 'top': '10px','margin': '0 0 0 517px'});
+							}
+							else {
+								$('#gotop').css({'position': 'absolute', 'top': '35px','margin': '0 0 0 429px'});
+							}
+						});
+					//-->
+					</script>
+				
+				</div>
+				
+			</div>
+		</div>
+	</div>
+	<!-- /content -->
+
+			
+	<!-- footer -->
+	<div id="footer">
+		<div class="foot_in">
+			<div class="f_txt">
+				<a href="/pagesite/clause/guide.asp">이용약관</a> <img src="/image/common/line_top.png" alt="" />
+				<a href="/pagesite/clause/internet.asp">인터넷서비스 이용약관</a> <img src="/image/common/line_top.png" alt="" />
+				<a href="/pagesite/clause/info.asp" style="color: #017a95;">개인정보처리방침</a> <img src="/image/common/line_top.png" alt="" />
+				<a href="/pagesite/clause/mv.asp">영상정보처리기기방침</a> 
+				<!-- <a href="" title="새창열림" target="_blank">사업자정보확인</a> -->
+			</div>
+
+			<div class="family">
+				<dl>
+					<dt class="fm_go"><a href="#familysite"><img alt="Family Site" src="/image/common/family.png" /></a></dt>
+					<dd class="fm_list" style="display: none;">
+						<ul>
+							<li><a target="_blank" href="#">Mega</a></li>
+                            <li><a target="_blank" href="#">ACE</a></li>
+						</ul>
+					</dd>
+				</dl>
+			</div>			
+			
+			<div class="addr">
+				<dl>
+					<dt class="hide">사업장주소</dt>
+					<dd>인천광역시 서구 원석로 195 (원창동) </dd>
+					<dt>전화번호</dt>
+					<dd>032-584-3111~4</dd>
+					<dt>팩스번호</dt>
+					<dd>032-584-3119</dd>
+				</dl>
+
+
+				<dl>
+					<dt>사업자등록번호</dt>
+					<dd>126-86-04321</dd>
+					<dt>통신판매신고</dt>
+					<dd>제 2011-인천서구-0529</dd>
+				</dl>	        
+
+				<p><img alt='Copyright (c) incheongrand c.c All rights Reserved.' src='/image/common/copy.png' /></p>
+			</div>
+			
+		</div>
+	</div>
+	<!-- /footer -->
+</div>
+
+<form name="main_listform_calender" id="main_listform_calender" method="post" action="">
+	<input type="hidden" id="main_golfrestype" name="golfrestype" value="real" />
+	<input type="hidden" id="main_schDate" name="schDate" value="" />
+	<input type="hidden" id="main_usrmemcd" name="usrmemcd" value="10" />
+	<input type="hidden" id="main_toDay" name="toDay" value="" />	
+	<input type="hidden" id="main_calnum" name="calnum" />
+</form>
+
+<form name="main_golf_reservation" id="main_golf_reservation" method="get" action="">
+	<input type="hidden" id="main_golf_usrmemcd" name="usrmemcd" value="10" />
+	<input type="hidden" id="main_golf_pointdate" name="pointdate" value="" />
+	<input type="hidden" id="main_golf_courseid" name="courseid" value="0" />
+	<input type="hidden" id="main_golf_openyn" name="openyn" value="" />
+	<input type="hidden" id="main_golf_dategbn" name="dategbn" value="" />
+	<input type="hidden" id="main_golf_choice_time" name="choice_time" value="" />
+	<input type="hidden" id="main_golf_restype" name="settype" value="R" />	
+</form>
+
+<div style="display:none">
+	<div id="mainpreviewContents" style="height:24px; line-height:27px; padding:0 10px; border:2px solid #97e7de; border-radius:10px; font-family:'돋움', dotum; font-size:12px; color:#3b3b3b; background-color:#fff;"></div>
+</div>
+
+<script type="text/javascript">	
+	/* 풍성 도움말 설정 부분 */
+	function mainhelperMouseOver(activedObject, previewWindow, strHelp)
+	{
+		//activedObject.style.color = "#666";
+		//activedObject.style.fontWeight = "normal";
+		//activedObject.style.backgroundColor = "#ccc";
+		//activedObject.parentNode.style.backgroundColor = "";
+		previewWindow.innerHTML = strHelp;
+	}
+
+
+	function mainhelperMouseOut(activedObject, previewWindow)
+	{
+		//activedObject.style.color = "#666";
+		//activedObject.style.fontWeight = "normal";
+		//activedObject.style.backgroundColor = "#ccc";
+		//activedObject.parentNode.style.backgroundColor = "";
+		previewWindow.innerHTML = "";
+	}
+
+	var mainhelper = new TOOLTIP;
+		mainhelper.setPreviewWindow("mainpreviewContents");
+		mainhelper.mouseoutFunc = mainhelperMouseOut;
+		mainhelper.mouseoverFunc = mainhelperMouseOver;
+		
+</script>
+
+
+</body>
+</html>
+<!-- ////////////////////////////////////////////////////////////////////////////////
+	Copyright(c)2021. cminfortek.com. All rights reserved.
+	이 사이트에 게제한 모든 소스와 정보에 대한 모든 권리는 씨엠인포텍(주)에게 있습니다.
+	사전 동의없이는 어떠한 형식과 방법으로든 무단 도용을 금합니다.
+	만일 위와 같은 권고에도 불구하고 무단 도용시 법적인 제재를 받으실 수 있습니다.
+	================================================================================
+	개인정보보호책임자 : XXXX (master@cminfor.co.kr)
+	기술 책임자 : XXXX (master@cminfor.co.kr)
+	컨텐츠 책임자 : XXXX (service@cminfor.co.kr)
+//////////////////////////////////////////////////////////////////////////////// -->
+
+<!-- // #### 컨텐츠 레이어 #### -->
+<!-- 잔여예약 시작-->
+<div id="popcalendardiv" class="calendarpop" >
+	<div class="header" id="bookgtitle">[예약가능팀수]</div>
+	<div class="body">
+	 <ul>
+	 
+	  <li><p id="bookgcnt1"></p></li>
+	 
+	  <li><p id="bookgcnt2"></p></li>
+	 	
+	 </ul>												
+	</div>
+</div>
+<!-- 잔여예약 종료-->
+
+<!-- 잔여예약 시작-->
+<div id="popbookgtimediv" class="bookgtimepop" >
+	<div class="header">[예약 신청 정보]</div>
+	<div class="body">
+	 <ul>
+	  <li><p id="bookgdate"></p></li>
+	  <li><p id="bookgcourse"></p></li>
+	  <li><p id="courseline"></p></li>
+	  <li><p id="greepe"></p></li>
+	  <li><p id="greepeinfo"></p></li>
+	 </ul>												
+	</div>
+</div>
+<!-- 잔여예약 종료-->
+
+<span style="display:none">
+	<div id="previewContents" style="border:1px solid #fff799;background-color:#fffabc;color:#666666;padding:0px 0px 0px 0px;margin: -4 auto;font-size:12px;"></div>	
+</span>
+
+<script type="text/javascript">	
+	/* 풍성 도움말 설정 부분 */
+	function helperMouseOver(activedObject, previewWindow, strHelp)
+	{
+		activedObject.style.color = "#757575";
+		activedObject.style.fontWeight = "normal";
+		//activedObject.style.backgroundColor = "#79a4e5";
+		activedObject.parentNode.style.backgroundColor = "";
+		previewWindow.innerHTML = strHelp;
+	}
+
+
+	function helperMouseOut(activedObject, previewWindow)
+	{
+		activedObject.style.color = "";
+		activedObject.style.fontWeight = "normal";
+		//activedObject.style.backgroundColor = "";
+		activedObject.parentNode.style.backgroundColor = "";
+		previewWindow.innerHTML = "";
+	}
+
+	var helper = new TOOLTIP;
+		helper.setPreviewWindow("previewContents");
+		helper.mouseoutFunc = helperMouseOut;
+		helper.mouseoverFunc = helperMouseOver;
+</script>
+
