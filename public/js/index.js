@@ -7,7 +7,7 @@
 /* eslint-disable no-undef */
 /* eslint-disable prefer-template */
 const cf = new jCommon();
-const ADDR_HEADER = 'http://golf.mnemosyne.co.kr:1006';
+const ADDR_HEADER = 'http://dev.mnemosyne.co.kr:1006';
 setClubs();
 
 selClubs.onchange = function () {
