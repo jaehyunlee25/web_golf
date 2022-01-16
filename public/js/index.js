@@ -25,6 +25,7 @@ btnSearch.onclick = function () {
     { golf_club_id: info.id },
     { 'Content-Type': 'application/json' },
     (data) => {
+      console.log(data);
       const result = JSON.parse(data);
       const res = [['date', 'time_slot', 'course_name', 'teams', 'green_fee']];
       result.info.forEach((obj) => {
