@@ -38,7 +38,7 @@ btnSearch.onclick = function () {
         ]);
       });
       makeTable(res);
-      alert('예약 정보를 성공적으로 조회하였습니다.');
+      // alert('예약 정보를 성공적으로 조회하였습니다.');
     },
   );
 };
