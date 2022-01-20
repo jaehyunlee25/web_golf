@@ -16,6 +16,7 @@ selClubs.onchange = function () {
   elCorpNum.innerHTML = info.corp_reg_number;
   elPhone.innerHTML = info.phone;
   elEmail.innerHTML = info.email;
+  btnSearch.onclick();
 };
 btnSearch.onclick = function () {
   const addr = ADDR_HEADER + '/api/reservation/getClubInfo';
