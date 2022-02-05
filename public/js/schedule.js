@@ -29,7 +29,8 @@ btnSearch.onclick = function () {
     { 'Content-Type': 'application/json' },
     (data) => {
       const result = JSON.parse(data);
-      elLastUpdated.innerHTML = result.timeStamp;
+      const tDate = new Date(result.timeStamp);
+      elLastUpdated.innerHTML = tDate.setHours(tDate.getHours() + 9);
       mkTable(result.schedule);
     },
   );
