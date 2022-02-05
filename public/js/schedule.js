@@ -7,7 +7,8 @@
 /* eslint-disable prettier/prettier */
 /* eslint-disable no-undef */
 /* eslint-disable prefer-template */
-const cf = new jCommon();
+
+// const cf = new jCommon();
 const ADDR_HEADER = 'http://dev.mnemosyne.co.kr:1006';
 setClubs();
 
@@ -28,6 +29,7 @@ btnSearch.onclick = function () {
     { 'Content-Type': 'application/json' },
     (data) => {
       const result = JSON.parse(data);
+      dir(result);
       mkTable(result.schedule);
     },
   );
