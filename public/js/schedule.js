@@ -30,7 +30,7 @@ btnSearch.onclick = function () {
     (data) => {
       const result = JSON.parse(data);
       const tDate = new Date(result.timeStamp);
-      elLastUpdated.innerHTML = new Date(tDate.setHours(tDate.getHours() + 9));
+      elLastUpdated.innerHTML = new Date(tDate.setHours(tDate.getHours() + 0));
       mkTable(result.schedule);
     },
   );
