@@ -74,8 +74,16 @@ function setClubs() {
   const addr = ADDR_HEADER + '/api/reservation/getGolfClubs';
   post(addr, {}, { 'Content-Type': 'application/json' }, (data) => {
     const result = JSON.parse(data);
-    dir(result);
+    
     selClubs.innerHTML = '';
+    result.golfClubs.sort((a, b) => { 
+      if(a.name > b.name) return 1;
+      if(a.name < b.name) return -1;
+      return 0;
+    });
+
+    dir(result.golfClubs);
+
     result.golfClubs.forEach((obj) => {
       const opt = document.createElement('option');
       selClubs.appendChild(opt);
