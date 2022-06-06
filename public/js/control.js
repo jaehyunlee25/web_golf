@@ -111,6 +111,8 @@ Number.prototype.ago = function() {
     return cf.rommify(this / hour, 0) + " 시간 전"
   } else if(this > min) {
     return cf.rommify(this / min, 0) + " 분 전"
+  } else if(this <= min) {
+    return cf.rommify(this / 1000, 0) + " 초 전"
   }
 };
 HTMLElement.prototype.add = function(tag) {
