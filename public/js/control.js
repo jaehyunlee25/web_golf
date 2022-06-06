@@ -94,6 +94,8 @@ Number.prototype.getColor = function() {
     return "lightgreen"
   } else if(this > min) {
     return "greenyellow"
+  } else if(this <= min) {
+    return "greenyellow"
   } else {
     return "red"
   }
