@@ -18,6 +18,15 @@ let count = 0;
 
 setClubs();
 
+function btnclick() {
+  this.disabled = 'disabled';
+  this.innerHTML = '조회중';
+  const addr = 'http://mnemosynesolutions.co.kr:8080/control';
+  console.log(this.club);
+  post(addr, { club: this.club }, { 'Content-Type': 'application/json' }, data => {
+    console.log(data);
+  });
+};
 function timer() {
   count = boxes.children.length - 1;
   getSchedule();
@@ -79,6 +88,13 @@ function setClubs() {
       const last = box.add('div');
       last.className = "reg";
       last.innerHTML = "조회: ";
+
+      const btnCover = box.add('div');
+      btnCover.style.textAlign = "center";
+      const btn = btnCover.add('button');
+      btn.innerHTML = "search";
+      btn.club = obj.eng_id;
+      btn.onclick = btnclick;
     });    
     timer();
   });
