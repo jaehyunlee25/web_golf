@@ -25,6 +25,7 @@ function btnclick() {
   console.log(this.club);
   post(addr, { club: this.club }, { 'Content-Type': 'application/json' }, data => {
     console.log(data);
+    this.disabled = false;
   });
 };
 function timer() {
