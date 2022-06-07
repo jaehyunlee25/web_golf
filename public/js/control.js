@@ -26,6 +26,7 @@ function btnclick() {
   post(addr, { club: this.club }, { 'Content-Type': 'application/json' }, data => {
     console.log(data);
     this.disabled = false;
+    this.innerHTML = 'search';
   });
 };
 function timer() {
