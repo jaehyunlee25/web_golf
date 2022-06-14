@@ -13,6 +13,8 @@
 /* eslint-disable prefer-template */
 
 // const cf = new jCommon();
+
+const CLUBS = {};
 const ADDR_HEADER = 'http://dev.mnemosyne.co.kr:1006';
 const WS_HEADER = 'ws://dev.mnemosyne.co.kr:9001';
 const socket = new WebSocket(WS_HEADER);
@@ -47,8 +49,28 @@ function wsmessage(event) {
     if (json.message.subType == 'search')
       json.message.parameter = JSON.parse(json.message.parameter);
     const param = json.message.parameter;
-    if (param.order == param.total)
+    const obj = CLUBS[json.message.golfClubId];
+    if (param.order == param.total) {
+      const addr = ADDR_HEADER + '/api/reservation/getSchedule';
+      post(
+        addr,
+        { golf_club_id: json.message.golfClubId },
+        { 'Content-Type': 'application/json' },
+        (data) => {
+          const result = JSON.parse(data);
+          const time = new Date() - new Date(result.timeStamp);
+          const box = obj.BOX;
+          let tDate = time.ago();
+          if (!tDate) tDate = '조회불가';
+          box.children[2].innerHTML = '조회: ' + tDate;
+          box.style.cssText = 'background-color:' + time.getColor();
+          count--;
+          if (count < 0) return;
+          getSchedule();
+        },
+      );
       console.log('search end:', json.messsage.golfClubId);
+    }
   } catch (e) {
     console.log(event.data);
   }
@@ -114,6 +136,7 @@ function setClubs() {
     dir(result.golfClubs);
 
     result.golfClubs.forEach((obj) => {
+      CLUBS[obj.id] = obj;
       const box = boxes.add('div');
       box.className = 'box';
       box.id = obj.id;
@@ -137,6 +160,9 @@ function setClubs() {
       btn.innerHTML = 'search';
       btn.club = obj.eng_id;
       btn.onclick = btnclick;
+
+      obj.BOX = box;
+      obj.button = btn;
     });
     timer();
   });
