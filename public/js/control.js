@@ -50,8 +50,8 @@ function wsmessage(event) {
   }
   console.log(json);
   json.message = JSON.parse(json.message);
-  if (json.message.subType == 'search')
-    json.message.parameter = JSON.parse(json.message.parameter);
+  if (json.message.subType != 'search') return;
+  json.message.parameter = JSON.parse(json.message.parameter);
   const param = json.message.parameter;
   const obj = CLUBS[json.message.golfClubId];
   if (param.order == param.total) {
