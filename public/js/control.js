@@ -45,34 +45,34 @@ function wsmessage(event) {
   let json;
   try {
     json = JSON.parse(event.data);
-    json.message = JSON.parse(json.message);
-    if (json.message.subType == 'search')
-      json.message.parameter = JSON.parse(json.message.parameter);
-    const param = json.message.parameter;
-    const obj = CLUBS[json.message.golfClubId];
-    if (param.order == param.total) {
-      const addr = ADDR_HEADER + '/api/reservation/getSchedule';
-      post(
-        addr,
-        { golf_club_id: json.message.golfClubId },
-        { 'Content-Type': 'application/json' },
-        (data) => {
-          const result = JSON.parse(data);
-          const time = new Date() - new Date(result.timeStamp);
-          const box = obj.BOX;
-          let tDate = time.ago();
-          if (!tDate) tDate = '조회불가';
-          box.children[2].innerHTML = '조회: ' + tDate;
-          box.style.cssText = 'background-color:' + time.getColor();
-          count--;
-          if (count < 0) return;
-          getSchedule();
-        },
-      );
-      console.log('search end:', json.messsage.golfClubId);
-    }
   } catch (e) {
     console.log(event.data);
+  }
+  json.message = JSON.parse(json.message);
+  if (json.message.subType == 'search')
+    json.message.parameter = JSON.parse(json.message.parameter);
+  const param = json.message.parameter;
+  const obj = CLUBS[json.message.golfClubId];
+  if (param.order == param.total) {
+    const addr = ADDR_HEADER + '/api/reservation/getSchedule';
+    post(
+      addr,
+      { golf_club_id: json.message.golfClubId },
+      { 'Content-Type': 'application/json' },
+      (data) => {
+        const result = JSON.parse(data);
+        const time = new Date() - new Date(result.timeStamp);
+        const box = obj.BOX;
+        let tDate = time.ago();
+        if (!tDate) tDate = '조회불가';
+        box.children[2].innerHTML = '조회: ' + tDate;
+        box.style.cssText = 'background-color:' + time.getColor();
+        count--;
+        if (count < 0) return;
+        getSchedule();
+      },
+    );
+    console.log('search end:', json.messsage.golfClubId);
   }
 }
 function btnclick() {
