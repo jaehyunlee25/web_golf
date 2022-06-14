@@ -56,24 +56,26 @@ function wsmessage(event) {
   const obj = CLUBS[json.message.golfClubId];
   if (param.order == param.total) {
     const addr = ADDR_HEADER + '/api/reservation/getSchedule';
-    post(
-      addr,
-      { golf_club_id: json.message.golfClubId },
-      { 'Content-Type': 'application/json' },
-      (data) => {
-        console.log(data);
-        const result = JSON.parse(data);
-        const time = new Date() - new Date(result.timeStamp);
-        const box = obj.BOX;
-        let tDate = time.ago();
-        if (!tDate) tDate = '조회불가';
-        box.children[2].innerHTML = '조회: ' + tDate;
-        box.style.cssText = 'background-color:' + time.getColor();
-        count--;
-        if (count < 0) return;
-        getSchedule();
-      },
-    );
+    setTimeout(() => {
+      post(
+        addr,
+        { golf_club_id: json.message.golfClubId },
+        { 'Content-Type': 'application/json' },
+        (data) => {
+          console.log(data);
+          const result = JSON.parse(data);
+          const time = new Date() - new Date(result.timeStamp);
+          const box = obj.BOX;
+          let tDate = time.ago();
+          if (!tDate) tDate = '조회불가';
+          box.children[2].innerHTML = '조회: ' + tDate;
+          box.style.cssText = 'background-color:' + time.getColor();
+          count--;
+          if (count < 0) return;
+          getSchedule();
+        },
+      );
+    }, 1000);
     console.log('search end:', json.message.golfClubId);
   }
 }
