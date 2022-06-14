@@ -61,6 +61,7 @@ function wsmessage(event) {
       { golf_club_id: json.message.golfClubId },
       { 'Content-Type': 'application/json' },
       (data) => {
+        console.log(data);
         const result = JSON.parse(data);
         const time = new Date() - new Date(result.timeStamp);
         const box = obj.BOX;
