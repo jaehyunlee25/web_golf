@@ -48,6 +48,7 @@ function wsmessage(event) {
   } catch (e) {
     console.log(event.data);
   }
+  console.log(json);
   json.message = JSON.parse(json.message);
   if (json.message.subType == 'search')
     json.message.parameter = JSON.parse(json.message.parameter);
