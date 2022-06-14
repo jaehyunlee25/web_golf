@@ -73,7 +73,7 @@ function wsmessage(event) {
         getSchedule();
       },
     );
-    console.log('search end:', json.messsage.golfClubId);
+    console.log('search end:', json.message.golfClubId);
   }
 }
 function btnclick() {
