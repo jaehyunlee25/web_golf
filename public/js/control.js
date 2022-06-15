@@ -55,6 +55,7 @@ function wsmessage(event) {
     console.log("log >", json.message);
     return;
   }
+  console.log(json.message);
   if (json.message.subType != 'search') return;
   json.message.parameter = JSON.parse(json.message.parameter);
   const param = json.message.parameter;
@@ -67,7 +68,6 @@ function wsmessage(event) {
         { golf_club_id: json.message.golfClubId },
         { 'Content-Type': 'application/json' },
         (data) => {
-          console.log(data);
           const result = JSON.parse(data);
           const time = new Date() - new Date(result.timeStamp);
           const box = obj.BOX;
