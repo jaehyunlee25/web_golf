@@ -49,8 +49,12 @@ function wsmessage(event) {
     console.log(event.data);
     return;
   }
-  console.log(json);
-  json.message = JSON.parse(json.message);
+  try{
+    json.message = JSON.parse(json.message);
+  } catch (e) {
+    console.log("log", json.message);
+    return;
+  }
   if (json.message.subType != 'search') return;
   json.message.parameter = JSON.parse(json.message.parameter);
   const param = json.message.parameter;
