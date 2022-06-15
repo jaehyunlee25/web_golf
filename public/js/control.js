@@ -62,6 +62,7 @@ function wsmessage(event) {
   
   if(param.total == 0) {
     procNoTee(json);
+    return;
   }
   if (param.order == param.total) {
     const addr = ADDR_HEADER + '/api/reservation/getSchedule';
