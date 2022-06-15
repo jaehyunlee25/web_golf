@@ -59,7 +59,7 @@ function wsmessage(event) {
   if (json.message.subType != 'search') return;
   json.message.parameter = JSON.parse(json.message.parameter);
   const param = json.message.parameter;
-  const obj = CLUBS[json.message.golfClubId];
+  
   if (param.order == param.total) {
     const addr = ADDR_HEADER + '/api/reservation/getSchedule';
     setTimeout(() => {
@@ -68,22 +68,31 @@ function wsmessage(event) {
         { golf_club_id: json.message.golfClubId },
         { 'Content-Type': 'application/json' },
         (data) => {
-          const result = JSON.parse(data);
-          const time = new Date() - new Date(result.timeStamp);
-          const box = obj.BOX;
-          let tDate = time.ago();
-          if (!tDate) tDate = '조회불가';
-          box.children[2].innerHTML = '조회: ' + tDate;
-          box.style.cssText = 'background-color:' + time.getColor();
-          count--;
-          if (count < 0) return;
-          getSchedule();
+          procWSData(data, json);
         },
       );
     }, 1000);
     console.log('search end:', json.message.golfClubId);
   }
 }
+function procWSData(data, json) {
+  const obj = CLUBS[json.message.golfClubId];
+  const param = json.message.parameter;
+  const result = JSON.parse(data);
+  const time = new Date() - new Date(result.timeStamp);
+  const box = obj.BOX;
+  let tDate = time.ago();
+  if (!tDate) tDate = '조회불가';
+  box.children[2].innerHTML = '조회: ' + tDate;
+  box.style.cssText = 'background-color:' + time.getColor();
+  if(param.total == 0) {
+    tData = "빈 티 없음";
+    box.style.cssText = 'background-color: white;';
+  }
+  count--;
+  if (count < 0) return;
+  getSchedule();
+};
 function btnclick() {
   this.disabled = 'disabled';
   this.innerHTML = '조회중';
