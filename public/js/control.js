@@ -52,7 +52,7 @@ function wsmessage(event) {
   try{
     json.message = JSON.parse(json.message);
   } catch (e) {
-    console.log("log", json.message);
+    console.log("log >", json.message);
     return;
   }
   if (json.message.subType != 'search') return;
