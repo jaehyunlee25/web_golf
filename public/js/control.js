@@ -91,7 +91,7 @@ function procWSData(data, json) {
   }
   count--;
   if (count < 0) return;
-  getSchedule();
+  if(param.total > 0) getSchedule();
 };
 function btnclick() {
   this.disabled = 'disabled';
