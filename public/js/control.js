@@ -60,6 +60,9 @@ function wsmessage(event) {
   json.message.parameter = JSON.parse(json.message.parameter);
   const param = json.message.parameter;
   
+  if(param.total == 0) {
+    procNoTee(json);
+  }
   if (param.order == param.total) {
     const addr = ADDR_HEADER + '/api/reservation/getSchedule';
     setTimeout(() => {
@@ -75,6 +78,12 @@ function wsmessage(event) {
     console.log('search end:', json.message.golfClubId);
   }
 }
+function procNoTee(json) {
+  const obj = CLUBS[json.message.golfClubId];
+  const param = json.message.parameter;
+  box.style.cssText = 'background-color: white;';
+  box.children[2].innerHTML = '조회: ' + '빈 티 없음';
+};
 function procWSData(data, json) {
   const obj = CLUBS[json.message.golfClubId];
   const param = json.message.parameter;
@@ -85,10 +94,6 @@ function procWSData(data, json) {
   if (!tDate) tDate = '조회불가';
   box.children[2].innerHTML = '조회: ' + tDate;
   box.style.cssText = 'background-color:' + time.getColor();
-  if(param.total == 0) {
-    tData = "빈 티 없음";
-    box.style.cssText = 'background-color: white;';
-  }
   count--;
   if (count < 0) return;
   if(param.total > 0) getSchedule();
