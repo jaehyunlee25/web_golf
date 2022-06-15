@@ -81,6 +81,7 @@ function wsmessage(event) {
 function procNoTee(json) {
   const obj = CLUBS[json.message.golfClubId];
   const param = json.message.parameter;
+  const box = obj.BOX;
   box.style.cssText = 'background-color: white;';
   box.children[2].innerHTML = '조회: ' + '빈 티 없음';
 };
