@@ -1,3 +1,4 @@
+/* eslint-disable eqeqeq */
 /* eslint-disable no-plusplus */
 /* eslint-disable no-else-return */
 /* eslint-disable consistent-return */
@@ -49,18 +50,18 @@ function wsmessage(event) {
     console.log(event.data);
     return;
   }
-  try{
+  try {
     json.message = JSON.parse(json.message);
   } catch (e) {
-    console.log("log >", json.message);
+    console.log('log >', json.message);
     return;
   }
   console.log(json.message);
   if (json.message.subType != 'search') return;
   json.message.parameter = JSON.parse(json.message.parameter);
   const param = json.message.parameter;
-  
-  if(param.total == 0) {
+
+  if (param.total == 0) {
     procNoTee(json);
     return;
   }
@@ -84,8 +85,8 @@ function procNoTee(json) {
   const param = json.message.parameter;
   const box = obj.BOX;
   box.style.cssText = 'background-color: white;';
-  box.children[2].innerHTML = '조회: ' + '빈 티 없음';
-};
+  box.children[2].innerHTML = '조회: 빈 티 없음';
+}
 function procWSData(data, json) {
   const obj = CLUBS[json.message.golfClubId];
   const param = json.message.parameter;
@@ -98,8 +99,8 @@ function procWSData(data, json) {
   box.style.cssText = 'background-color:' + time.getColor();
   count--;
   if (count < 0) return;
-  if(param.total > 0) getSchedule();
-};
+  if (param.total > 0) getSchedule();
+}
 function btnclick() {
   this.disabled = 'disabled';
   this.innerHTML = '조회중';
