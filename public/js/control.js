@@ -47,6 +47,7 @@ function wsmessage(event) {
     json = JSON.parse(event.data);
   } catch (e) {
     console.log(event.data);
+    return;
   }
   console.log(json);
   json.message = JSON.parse(json.message);
