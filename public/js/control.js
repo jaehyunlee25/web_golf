@@ -68,7 +68,7 @@ function wsmessage(event) {
       procMessage("subType" + ": " + json.message.subType);
       procMessage("deviceId" + ": " + json.message.deviceId);
       procMessage("deviceToken" + ": " + json.message.deviceToken);
-      procMessage("golf_club" + ": " + json.message.golf_club_id);
+      procMessage("golf_club" + ": " + json.message.golfClubId);
       procMessage("ip" + ": " + json.message.ip);
       procMessage("message" + ": " + json.message.message);
     } else {
@@ -84,7 +84,7 @@ function wsmessage(event) {
   procMessage("subType" + ": " + json.message.subType);
   procMessage("deviceId" + ": " + json.message.deviceId);
   procMessage("deviceToken" + ": " + json.message.deviceToken);
-  procMessage("golf_club" + ": " + json.message.golf_club_id);
+  procMessage("golf_club" + ": " + json.message.golfClubId);
   procMessage("ip" + ": " + json.message.ip);
   procMessage("message" + ": " + json.message.message);
   procMessage("total" + ": " + param.total);
