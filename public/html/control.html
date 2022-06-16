@@ -38,11 +38,26 @@
         padding-left: 5px;
         margin-bottom: 10px;
       }
+      #bulletin {
+        width: 70%;
+        height: 100px;
+        margin: auto;
+        color: white;
+        background-color: black;
+        font-size: 13px;
+        padding: 5px;
+        border-radius: 8px;
+        margin-bottom: 10px;
+        text-align: left;
+        padding-left: 10px;
+        overflow: auto;
+      }
     </style>
   </head>
   <body>
-    <div style='width:1500px;margin:auto;'>
+    <div style='width:1500px;margin:auto;text-align:center;'>
       <h3 style = 'text-align:center;'>Golf Club Control Room</h3>
+      <div id = "bulletin"></div>
       <div id='boxes'></div>
     </div>      
     <script src='/js/control.js'></script>

@@ -1,3 +1,4 @@
+/* eslint-disable no-useless-concat */
 /* eslint-disable eqeqeq */
 /* eslint-disable no-plusplus */
 /* eslint-disable no-else-return */
@@ -47,19 +48,45 @@ function wsmessage(event) {
   try {
     json = JSON.parse(event.data);
   } catch (e) {
-    console.log(event.data);
+    procMessage(event.data);
     return;
   }
   try {
     json.message = JSON.parse(json.message);
   } catch (e) {
-    console.log('log >', json.message);
+    procMessage(json.message);
     return;
   }
-  console.log(json.message);
-  if (json.message.subType != 'search') return;
+  
+  if (json.message.subType != 'search') {
+    if(typeof json.message == 'string') {
+      procMessage(json.message);
+    }else if(json.message.subType == 'login') {
+      procMessage("subType" + ": " + json.message.subType);
+      procMessage("deviceId" + ": " + json.message.deviceId);
+      procMessage("deviceToken" + ": " + json.message.deviceToken);
+      procMessage("golf_club" + ": " + json.message.golf_club_id);
+      procMessage("ip" + ": " + json.message.ip);
+      procMessage("message" + ": " + json.message.message);
+    } else {
+      Object.keys(json.message).forEach(key => {
+        procMessage(key + ": " + json.message[key]);
+      });
+    }
+    return;
+  }
+  // console.log(json.message);
   json.message.parameter = JSON.parse(json.message.parameter);
   const param = json.message.parameter;
+  procMessage("subType" + ": " + json.message.subType);
+  procMessage("deviceId" + ": " + json.message.deviceId);
+  procMessage("deviceToken" + ": " + json.message.deviceToken);
+  procMessage("golf_club" + ": " + json.message.golf_club_id);
+  procMessage("ip" + ": " + json.message.ip);
+  procMessage("message" + ": " + json.message.message);
+  procMessage("total" + ": " + param.total);
+  procMessage("order" + ": " + param.order);
+  procMessage("date" + ": " + param.date);
 
   if (param.total == 0) {
     procNoTee(json);
@@ -77,9 +104,15 @@ function wsmessage(event) {
         },
       );
     }, 1000);
-    console.log('search end:', json.message.golfClubId);
+    // console.log('search end:', json.message.golfClubId);
   }
 }
+function procMessage(data) {
+  const div = bulletin.add("div");
+  div.innerHTML = "> " + data;
+  bulletin.scrollTop = bulletin.scrollHeight;
+  if(bulletin.children.length > 500) bulletin.removeChild(bulletin.children[0]);
+};
 function procNoTee(json) {
   const obj = CLUBS[json.message.golfClubId];
   const param = json.message.parameter;
@@ -102,51 +135,43 @@ function procWSData(data, json) {
   if (param.total > 0) getSchedule();
 }
 function btnclick() {
-  this.disabled = 'disabled';
-  this.innerHTML = '조회중';
-  const addr = 'http://mnemosynesolutions.co.kr:8080/control';
-  console.log(this.club);
-  post(
-    addr,
-    { club: this.club },
-    { 'Content-Type': 'application/json' },
-    (data) => {
-      console.log(data);
-      this.disabled = false;
-      this.innerHTML = 'search';
-    },
-  );
+  getSchedule(this.club_id, result => {
+    const box = CLUBS[this.club_id].BOX;
+    if(result.resultCode === 400) {
+      box.children[2].innerHTML = '조회: 결과없음';
+      box.style.cssText = 'background-color: white;';
+      return;
+    }
+    const time = new Date() - new Date(result.timeStamp);
+    let tDate = time.ago();
+    if (!tDate) tDate = '조회불가';
+    box.children[2].innerHTML = '조회: ' + tDate;
+    box.style.cssText = 'background-color:' + time.getColor();
+    
+  });
+}
+function controlclick() {
+  const addr = "http://mnemosynesolutions.co.kr:8080/control";
+  const header = { 'Content-Type': 'application/json' };
+  post(addr, { club: this.club }, header, (data) => { console.log(data) });
 }
 function timer() {
-  count = boxes.children.length - 1;
-  getSchedule();
-  /* const t = setInterval(() => {
-    log('timer');
-    count = boxes.children.length - 1;
-    getSchedule();
-  }, 1000 * 10); */
+  Object.keys(CLUBS).forEach(club_id => {
+    const obj = CLUBS[club_id];
+    obj.button.click();
+  });
 }
-function getSchedule() {
-  const lmt = boxes.children.length - 1;
-  const box = boxes.children[lmt - count];
-  const club_id = box.id;
+function getSchedule(golf_club_id, callback) {
+  const club_id = golf_club_id;
   const addr = ADDR_HEADER + '/api/reservation/getSchedule';
   post(
     addr,
     { golf_club_id: club_id },
     { 'Content-Type': 'application/json' },
     (data) => {
-      const result = JSON.parse(data);
-      const time = new Date() - new Date(result.timeStamp);
-      let tDate = time.ago();
-      if (!tDate) tDate = '조회불가';
-      box.children[2].innerHTML = '조회: ' + tDate;
-      box.style.cssText = 'background-color:' + time.getColor();
-      count--;
-      if (count < 0) return;
-      getSchedule();
-    },
-  );
+      if(callback) callback(JSON.parse(data));
+    }
+  );    
 }
 function setClubs() {
   const addr = ADDR_HEADER + '/api/reservation/getGolfClubs';
@@ -185,10 +210,18 @@ function setClubs() {
       const btn = btnCover.add('button');
       btn.innerHTML = 'search';
       btn.club = obj.eng_id;
+      btn.club_id = obj.id;
       btn.onclick = btnclick;
-
+      
       obj.BOX = box;
       obj.button = btn;
+
+      const btnControl = btnCover.add('button');
+      btnControl.innerHTML = 'control';
+      btnControl.club = obj.eng_id;
+      btnControl.club_id = obj.id;
+      btnControl.onclick = controlclick;
+
     });
     timer();
   });
