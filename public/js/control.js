@@ -28,6 +28,9 @@ let count = 0;
 
 setClubs();
 
+btnAdd.onclick = function() {
+  window.open("newClub.html");
+};
 function wsopen() {
   console.log('socket server opened!');
   socket.send(
@@ -221,6 +224,14 @@ function setClubs() {
       btnControl.club = obj.eng_id;
       btnControl.club_id = obj.id;
       btnControl.onclick = controlclick;
+
+      const btnEdit = btnCover.add('button');
+      btnEdit.innerHTML = 'editor';
+      btnEdit.club = obj.eng_id;
+      btnEdit.club_id = obj.id;
+      btnEdit.onclick = () => {
+        window.open('editor.html?club_id=' + obj.id);
+      };
 
     });
     timer();
