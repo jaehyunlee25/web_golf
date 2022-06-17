@@ -23,23 +23,24 @@ const WS_HEADER = 'ws://dev.mnemosyne.co.kr:9001';
 
 // eslint-disable-next-line camelcase
 const golf_club_id = cf.getGet().club_id;
-log(golf_club_id);
-post(
-  "http://mnemosynesolutions.co.kr:8080/get_pure_search_core", 
-  { club: 'tgv_KMH' }, 
-  {'Content-Type': 'application/json'}, 
-  data => {
-    const json = JSON.parse(data);
-    dir(json);
-    taMneCall.value = json.part.mneCall.proc();
-    taMneCallDetail.value = json.part.mneCallDetail.proc();
-    taFunction.value = json.part.function.proc();
-    taCommand.value = json.part.command.proc();
-  }
-);
-/* getSchedule(golf_club_id, (data) => {
-  dir(data);
-}); */
+getSchedule(golf_club_id, (data) => {
+  const engName = data;
+  console.dir(data);
+  return;
+  post(
+    "http://mnemosynesolutions.co.kr:8080/get_pure_search_core", 
+    { club: 'tgv_KMH' }, 
+    {'Content-Type': 'application/json'}, 
+    data => {
+      const json = JSON.parse(data);
+      dir(json);
+      taMneCall.value = json.part.mneCall.proc();
+      taMneCallDetail.value = json.part.mneCallDetail.proc();
+      taFunction.value = json.part.function.proc();
+      taCommand.value = json.part.command.proc();
+    }
+  );
+});
 btnSubmit.onclick = function() {
   const part = {
     mneCall: "",
@@ -57,6 +58,17 @@ btnSubmit.onclick = function() {
     {'Content-Type': 'application/json'}, 
     data => {
       log(data);
+    }
+  );
+};
+function getGolfClub(golf_club_id, callback) {
+  const addr = ADDR_HEADER + '/api/reservation/getGolfClub';
+  post(
+    addr,
+    { golf_club_id },
+    { 'Content-Type': 'application/json' },
+    (data) => {
+      if(callback) callback(JSON.parse(data));
     }
   );
 };
