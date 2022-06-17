@@ -31,7 +31,7 @@ btnReg.onclick = function() {
     ipts.forEach(ipt => {
         param[ipt.name] = ipt.value.replace(/\s/g, '');
     });
-    const addr = "http://dev.mnemosyne.co.kr:1007/api/reservation/newGolfClub";
+    const addr = "http://dev.mnemosyne.co.kr:1006/api/reservation/newGolfClub";
     const header = { 'Content-Type': 'application/json' };
     post(addr, param, header, data => {
         
