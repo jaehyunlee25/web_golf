@@ -62,7 +62,7 @@ btnSubmit.onclick = function() {
   );
 };
 function getGolfClub(golf_club_id, callback) {
-  const addr = ADDR_HEADER + '/api/reservation/getGolfClub';
+  const addr = ADDR_HEADER + '/api/reservation/getGolfClubs';
   post(
     addr,
     { golf_club_id },
