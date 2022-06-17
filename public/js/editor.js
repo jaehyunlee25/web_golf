@@ -23,7 +23,7 @@ const WS_HEADER = 'ws://dev.mnemosyne.co.kr:9001';
 
 // eslint-disable-next-line camelcase
 const golf_club_id = cf.getGet().club_id;
-getSchedule(golf_club_id, (data) => {
+getGolfClub(golf_club_id, (data) => {
   const engName = data;
   console.dir(data);
   return;
