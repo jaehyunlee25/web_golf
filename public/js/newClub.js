@@ -34,7 +34,9 @@ btnReg.onclick = function() {
     ];
     const param = {};
     ipts.forEach(ipt => {
-        param[ipt.name] = ipt.value.replace(/\s/g, '');
+        if(ipt.id == 'iptIntro') param[ipt.name] = ipt.value;
+        else param[ipt.name] = ipt.value.replace(/\s/g, '');
+
         ipt.value = "";
     });
     const addr = "http://dev.mnemosyne.co.kr:1006/api/reservation/newGolfClub";
