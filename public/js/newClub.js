@@ -15,6 +15,7 @@
 /* eslint-disable no-undef */
 /* eslint-disable prefer-template */
 btnReg.onclick = function() {
+    this.disabled = true;
     const ipts = [
         iptName, 
         iptAddress, 
@@ -30,10 +31,12 @@ btnReg.onclick = function() {
     const param = {};
     ipts.forEach(ipt => {
         param[ipt.name] = ipt.value.replace(/\s/g, '');
+        ipt.value = "";
     });
     const addr = "http://dev.mnemosyne.co.kr:1006/api/reservation/newGolfClub";
     const header = { 'Content-Type': 'application/json' };
     post(addr, param, header, data => {
-        
+        console.log(data);
+        btnReg.disabled = false;
     })
 };
