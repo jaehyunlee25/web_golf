@@ -24,12 +24,10 @@ const WS_HEADER = 'ws://dev.mnemosyne.co.kr:9001';
 // eslint-disable-next-line camelcase
 const golf_club_id = cf.getGet().club_id;
 getGolfClub(golf_club_id, (data) => {
-  const engName = data;
-  console.dir(data);
-  return;
+  const engName = data.eng_id;
   post(
     "http://mnemosynesolutions.co.kr:8080/get_pure_search_core", 
-    { club: 'tgv_KMH' }, 
+    { club: engName }, 
     {'Content-Type': 'application/json'}, 
     data => {
       const json = JSON.parse(data);
