@@ -68,7 +68,10 @@ function getGolfClub(golf_club_id, callback) {
     { golf_club_id },
     { 'Content-Type': 'application/json' },
     (data) => {
-      if(callback) callback(JSON.parse(data));
+      data.golfClubs.forEach(club => {
+        if(club.id == golf_club_id) if(callback) callback(JSON.parse(data));
+      });
+      
     }
   );
 };
