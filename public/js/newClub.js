@@ -37,6 +37,7 @@ btnReg.onclick = function() {
     const header = { 'Content-Type': 'application/json' };
     post(addr, param, header, data => {
         console.log(data);
+        console.dir(param);
         btnReg.disabled = false;
     })
 };
