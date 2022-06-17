@@ -14,6 +14,10 @@
 /* eslint-disable prettier/prettier */
 /* eslint-disable no-undef */
 /* eslint-disable prefer-template */
+iptIntro.onchange = function() {
+    const val = this.value;
+    this.value = val.replace(/\'/g, "");
+};
 btnReg.onclick = function() {
     this.disabled = true;
     const ipts = [
