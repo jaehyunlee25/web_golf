@@ -14,3 +14,26 @@
 /* eslint-disable prettier/prettier */
 /* eslint-disable no-undef */
 /* eslint-disable prefer-template */
+btnReg.onclick = function() {
+    const ipts = [
+        iptName, 
+        iptAddress, 
+        iptRegion, 
+        iptPhone, 
+        iptEmail, 
+        iptHomepage, 
+        iptRegNumber, 
+        iptIntro,
+        iptEngId,
+        iptCourse,
+    ];
+    const param = {};
+    ipts.forEach(ipt => {
+        param[ipt.name] = ipt.value.replace(/\s/g, '');
+    });
+    const addr = "http://localhost:3001/api/reservation/newGolfClub";
+    const header = { 'Content-Type': 'application/json' };
+    post(addr, param, header, data => {
+        
+    })
+};
