@@ -34,7 +34,7 @@ btnReg.onclick = function() {
     ];
     const param = {};
     ipts.forEach(ipt => {
-        if(ipt.id == 'iptIntro') param[ipt.name] = ipt.value;
+        if(ipt.id == 'iptIntro' || ipt.id == 'iptAddress') param[ipt.name] = ipt.value;
         else param[ipt.name] = ipt.value.replace(/\s/g, '');
 
         ipt.value = "";
