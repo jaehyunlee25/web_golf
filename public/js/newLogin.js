@@ -29,6 +29,7 @@ post(
     }
 );
 function mkTable(result){
+    dir(result);
     result.forEach(obj => {
         const tr = tblLogin.add('tr');
         let flg = false;
@@ -60,13 +61,14 @@ function mkTable(result){
             }
         });
         const btnTd = tr.add('td');
-        if(!flg) return;
-        const btn = btnTd.add('button');
-        btn.innerHTML = '입력';
-        btn.param = obj;
-        btn.ipts = ipts;
-        btn.style.width = '80px';
-        btn.onclick = btnclick;
+        if(flg) {
+            const btn = btnTd.add('button');
+            btn.innerHTML = '입력';
+            btn.param = obj;
+            btn.ipts = ipts;
+            btn.style.width = '80px';
+            btn.onclick = btnclick;
+        }
 
         const editTd = tr.add('td');
         const btnEdit = editTd.add('button');
@@ -78,7 +80,7 @@ function mkTable(result){
     });
 };
 function btnEditclick() {
-  location.href = "loginEditor.html?golfClubId=" + this.param.id;
+  window.open("loginEditor.html?clubId=" + this.param.eng_id);
 };
 function btnclick() {
     dir(this.ipts);
