@@ -20,6 +20,7 @@
 const cf = new jCommon();
 const ADDR_HEADER = 'http://dev.mnemosyne.co.kr:1006';
 const addr = ADDR_HEADER + '/api/reservation/getGolfClubSearchInfo';
+let accounts;
 post(
     addr,
     { },
@@ -27,6 +28,14 @@ post(
     (data) => {
         const result = JSON.parse(data);
         mkTable(result.golfClubs);
+    }
+);
+post(
+    "http://mnemosynesolutions.co.kr:8080/account",
+    { },
+    { 'Content-Type': 'application/json' },
+    (data) => {
+        accounts = JSON.parse(data).accounts;
     }
 );
 function mkTable(result){
@@ -92,14 +101,20 @@ function mkTable(result){
 };
 function getLoginScript(engName) {
     const pop = layerpop();
-    const ta = pop.content.add("textarea");    
-    post("http://mnemosynesolutions.co.kr:8080/" + engName, { key: "value" }, { 'Content-Type': 'application/json' }, data => {
-        const json = JSON.parse(data);
-        ta.value = json.script;
-        ta.select();
-        document.execCommand("copy");
-        pop.close();
-    });
+    const ta = pop.content.add("textarea");
+    const account = accounts[engName];
+    post(
+        "http://mnemosynesolutions.co.kr:8080/" + engName, 
+        { key: "value" }, 
+        { 'Content-Type': 'application/json' }, 
+        data => {
+            const json = JSON.parse(data);
+            ta.value = json.script.dp({login_id: account.id, login_password: account.pw});
+            ta.select();
+            document.execCommand("copy");
+            pop.close();
+        }
+    );
 };
 function btnEditclick() {
   window.open("editor.html?club_id=" + this.param.id);
@@ -126,6 +141,19 @@ function btnclick() {
             });
         }
     );
+};
+String.prototype.dp = function (param) {
+    let self = this;
+    const keys = Object.keys(param);
+    keys.forEach((key) => {
+        const regex = new RegExp("\\$\\{".add(key).add("\\}"), "g");
+        const val = param[key];
+        self = self.replace(regex, val);
+    });
+    return self;
+};
+String.prototype.add = function add(str) {
+    return [this, str].join("");
 };
 HTMLElement.prototype.add = function(tagName){
     const el = document.createElement(tagName);
