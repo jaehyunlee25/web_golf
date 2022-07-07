@@ -18,7 +18,7 @@
 /* eslint-disable prefer-template */
 const cf = new jCommon();
 const ADDR_HEADER = 'http://dev.mnemosyne.co.kr:1006';
-const addr = ADDR_HEADER + '/api/reservation/getGolfClubLoginInfo';
+const addr = ADDR_HEADER + '/api/reservation/getGolfClubSearchInfo';
 post(
     addr,
     { },
@@ -30,8 +30,8 @@ post(
 );
 function mkTable(result){
     dir(result);
-    result.forEach((obj, i) => {        
-        const tr = tblLogin.add('tr');
+    result.forEach((obj, i) => {
+        const tr = tblSearch.add('tr');
         let flg = false;
         const ipts = [];
         const tdd = tr.add("td");
@@ -44,6 +44,7 @@ function mkTable(result){
             const td = tdd.add('div');
             td.innerHTML = val;
             let ipt;
+            if(key == 'eng_id') tdd.style.textAlign = 'center';
             if(key == 'homepage' || key == 'mobile'){
                 td.style.width = 450 + "px";
                 if(val != null){
@@ -83,7 +84,7 @@ function mkTable(result){
     });
 };
 function btnEditclick() {
-  window.open("loginEditor.html?clubId=" + this.param.eng_id);
+  window.open("editor.html?club_id=" + this.param.id);
 };
 function btnclick() {
     dir(this.ipts);
@@ -93,14 +94,15 @@ function btnclick() {
     });
     
     dir(this.param);
-    const addr = ADDR_HEADER + '/api/reservation/setGolfClubLoginInfo';
+    const addr = ADDR_HEADER + '/api/reservation/setGolfClubSearchInfo';
     post(
         addr,
         this.param,
         { 'Content-Type': 'application/json' },
         (data) => {
             const result = JSON.parse(data);
-            location.href = location.href;
+            dir(result);
+            // location.href = location.href;
         }
     );
 };
