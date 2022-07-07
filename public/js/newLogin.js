@@ -30,7 +30,7 @@ post(
 );
 function mkTable(result){
     dir(result);
-    result.forEach((obj, i) => {
+    result.forEach((obj, i) => {        
         const tr = tblLogin.add('tr');
         let flg = false;
         const ipts = [];
