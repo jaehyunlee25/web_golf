@@ -87,7 +87,7 @@ function btnEditclick() {
 };
 function btnclick() {
     dir(this.ipts);
-    
+    const self = this;
     this.ipts.forEach(ipt => {
         this.param[ipt.name] = ipt.value;
     });
