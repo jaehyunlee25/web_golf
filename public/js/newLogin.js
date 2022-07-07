@@ -100,7 +100,10 @@ function btnclick() {
         { 'Content-Type': 'application/json' },
         (data) => {
             const result = JSON.parse(data);
-            location.href = location.href;
+            // location.href = location.href;
+            self.ipts.forEach(ipt => {
+                if(ipt.value) ipt.parentNode.innerHTML = ipt.value;
+            });
         }
     );
 };

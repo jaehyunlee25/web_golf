@@ -103,6 +103,9 @@ function btnclick() {
             const result = JSON.parse(data);
             dir(result);
             // location.href = location.href;
+            self.ipts.forEach(ipt => {
+                if(ipt.value) ipt.parentNode.innerHTML = ipt.value;
+            });
         }
     );
 };
