@@ -30,10 +30,13 @@ post(
 );
 function mkTable(result){
     dir(result);
-    result.forEach(obj => {
+    result.forEach((obj, i) => {
         const tr = tblLogin.add('tr');
         let flg = false;
         const ipts = [];
+        const tdd = tr.add("td");
+        const td = tdd.add('div');
+        td.innerHTML = i + 1;
         Object.keys(obj).forEach(key => {
             if(key == 'created_at' || key == 'updated_at') return;
             const val = obj[key];
@@ -82,9 +85,8 @@ function mkTable(result){
 function btnEditclick() {
   window.open("loginEditor.html?clubId=" + this.param.eng_id);
 };
-function btnclick() {
-    dir(this.ipts);
-    
+function btnclick() {   
+    const self = this;
     this.ipts.forEach(ipt => {
         this.param[ipt.name] = ipt.value;
     });
@@ -97,7 +99,10 @@ function btnclick() {
         { 'Content-Type': 'application/json' },
         (data) => {
             const result = JSON.parse(data);
-            location.href = location.href;
+            // location.href = location.href;
+            self.ipts.forEach(ipt => {
+                if(ipt.value) ipt.parentNode.innerHTML = ipt.value;
+            });
         }
     );
 };
