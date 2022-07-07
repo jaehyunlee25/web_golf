@@ -1,3 +1,4 @@
+/* eslint-disable no-script-url */
 /* eslint-disable no-self-assign */
 /* eslint-disable no-restricted-globals */
 /* eslint-disable no-shadow */
@@ -44,7 +45,13 @@ function mkTable(result){
             const td = tdd.add('div');
             td.innerHTML = val;
             let ipt;
-            if(key == 'eng_id') tdd.style.textAlign = 'center';
+            if(key == 'eng_id') {
+                tdd.style.textAlign = 'center';
+                tdd.innerHTML = "";
+                const a = tdd.add("a");
+                a.href = 'javascript:getLoginScript("' + val + '");';
+                a.innerHTML = val;
+            }
             if(key == 'homepage' || key == 'mobile'){
                 td.style.width = 450 + "px";
                 if(val != null){
@@ -81,6 +88,17 @@ function mkTable(result){
         btnEdit.ipts = ipts;
         btnEdit.style.width = '80px';
         btnEdit.onclick = btnEditclick;
+    });
+};
+function getLoginScript(engName) {
+    const pop = layerpop();
+    const ta = pop.content.add("textarea");    
+    post("http://mnemosynesolutions.co.kr:8080/" + engName, { key: "value" }, { 'Content-Type': 'application/json' }, data => {
+        const json = JSON.parse(data);
+        ta.value = json.script;
+        ta.select();
+        document.execCommand("copy");
+        pop.close();
     });
 };
 function btnEditclick() {
