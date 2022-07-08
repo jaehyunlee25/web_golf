@@ -3297,7 +3297,7 @@ function jFile(addr, param, callback) {
   a.file(addr, param);
   a.ajaxcallback = callback;
 }
-function post(addr, param, header, callback) {
+function post(addr, param, header, callback, error) {
   var a = new ajaxcallforgeneral(),
     str = [];
   if (header['Content-Type'] == 'application/json') {
@@ -3308,6 +3308,7 @@ function post(addr, param, header, callback) {
   }
   a.post(addr, str, header);
   a.ajaxcallback = callback;
+  if(error) a.ajaxerror = error;
 }
 function MAPPER(a, b, x) {
   var A = a,

@@ -95,7 +95,10 @@ function ajaxcallforgeneral() {
         var data = j.xmlHttp.responseText;
         j.ajaxcallback(data);
       } else {
+        j.ajaxerror(j.xmlHttp.readyState, j.xmlHttp.status);
       }
+    } else {
+      j.ajaxerror(j.xmlHttp.readyState, j.xmlHttp.status);
     }
   }
 }

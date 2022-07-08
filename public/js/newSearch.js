@@ -123,7 +123,10 @@ function getLoginScript(engName) {
             ta.select();
             document.execCommand("copy");
             pop.close();
-        }
+        },
+        (readyState, status) => {
+            console.log("error!!", readyState, status);
+        } 
     );
 };
 function btnEditclick() {
