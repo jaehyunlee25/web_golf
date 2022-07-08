@@ -97,8 +97,6 @@ function ajaxcallforgeneral() {
       } else {
         if(j.ajaxerror) j.ajaxerror(j.xmlHttp.readyState, j.xmlHttp.status);
       }
-    } else {
-      if(j.ajaxerror) j.ajaxerror(j.xmlHttp.readyState, j.xmlHttp.status);
     }
   }
 }
