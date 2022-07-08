@@ -61,7 +61,7 @@ function mkTable(result){
                 a.href = 'javascript:getLoginScript("' + val + '");';
                 a.innerHTML = val;
             }
-            if(key == 'homepage' || key == 'mobile'){
+            if(key == 'login' || key == 'mobile'){
                 td.style.width = 450 + "px";
                 if(val != null){
                     td.innerHTML = '';
@@ -72,6 +72,7 @@ function mkTable(result){
                     td.style.textAlign = 'left';
                 }
             }
+            if(key == 'login') td.onclick = loginClick;
             if(val == null || val == "") {
                 ipt = td.add("input");
                 ipt.style.width = '90%';
@@ -98,6 +99,15 @@ function mkTable(result){
         btnEdit.style.width = '80px';
         btnEdit.onclick = btnEditclick;
     });
+};
+function loginClick(e) {
+    e.preventDefault();
+    const url = this.children[0].innerHTML;
+    const ipt = this.add("input");
+    ipt.value = url;
+    ipt.select();
+    document.execCommand("copy");
+    this.removeChild(ipt);
 };
 function getLoginScript(engName) {
     const pop = layerpop();
