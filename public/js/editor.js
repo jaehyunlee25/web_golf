@@ -25,6 +25,7 @@ const WS_HEADER = 'ws://dev.mnemosyne.co.kr:9001';
 const golf_club_id = cf.getGet().club_id;
 let engName;
 getGolfClub(golf_club_id, (data) => {
+  elClubName.innerHTML = data.name + "::" + data.eng_id;
   engName = data.eng_id;
   post(
     "http://mnemosynesolutions.co.kr:8080/get_pure_search_core", 
