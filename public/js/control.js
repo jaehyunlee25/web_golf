@@ -39,6 +39,12 @@ function wsopen() {
       topic: 'TZLOG',
     }),
   );
+  socket.send(
+    JSON.stringify({
+      command: 'subscribe',
+      topic: 'TZ_ANDROID_LOG',
+    }),
+  );
 }
 function wsclose(event) {
   console.log('socket server cloded!', event.code, envent.reason);
