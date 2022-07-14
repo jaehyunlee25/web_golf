@@ -154,7 +154,8 @@ function btnclick() {
   });
 }
 function controlclick() {
-  const addr = "http://mnemosynesolutions.co.kr:8080/control";
+// const addr = "http://mnemosynesolutions.co.kr:8080/control";
+  const addr = "http://dev.mnemosyne.co.kr:1005/control";
   const header = { 'Content-Type': 'application/json' };
   post(addr, { club: this.club }, header, (data) => { console.log(data) });
 }
