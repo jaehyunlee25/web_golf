@@ -47,7 +47,7 @@ function wsopen() {
   );
 }
 function wsclose(event) {
-  console.log('socket server cloded!', event.code, envent.reason);
+  console.log('socket server cloded!', event.code, event.reason);
 }
 function wserror(e) {
   console.log(e.message);
