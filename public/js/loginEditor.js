@@ -24,7 +24,7 @@ const WS_HEADER = 'ws://dev.mnemosyne.co.kr:9001';
 // eslint-disable-next-line camelcase
 const eng_id = cf.getGet().clubId;
 post(
-  'http://mnemosynesolutions.co.kr:8080/get_pure_login',
+  'http://dev.mnemosyne.co.kr:1009/get_pure_login',
   { club: eng_id },
   { 'Content-Type': 'application/json' },
   (data) => {
@@ -40,7 +40,7 @@ post(
 btnSubmit.onclick = function () {
   const core = taMneCall.value.proc();
   post(
-    'http://mnemosynesolutions.co.kr:8080/set_pure_login',
+    'http://dev.mnemosyne.co.kr:1009/set_pure_login',
     { engName: eng_id, core },
     { 'Content-Type': 'application/json' },
     (data) => {

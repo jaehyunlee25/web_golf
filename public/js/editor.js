@@ -28,7 +28,7 @@ getGolfClub(golf_club_id, (data) => {
   elClubName.innerHTML = data.name + "::" + data.eng_id;
   engName = data.eng_id;
   post(
-    "http://mnemosynesolutions.co.kr:8080/get_pure_search_core", 
+    "http://dev.mnemosyne.co.kr:1009/get_pure_search_core", 
     { club: engName }, 
     {'Content-Type': 'application/json'}, 
     data => {
@@ -53,7 +53,7 @@ btnSubmit.onclick = function() {
   part.function = taFunction.value.proc();
   part.command = taCommand.value.proc();
   post(
-    "http://mnemosynesolutions.co.kr:8080/set_pure_search_core", 
+    "http://dev.mnemosyne.co.kr:1009/set_pure_search_core", 
     { club: engName, part }, 
     {'Content-Type': 'application/json'}, 
     data => {

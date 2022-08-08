@@ -31,7 +31,7 @@ post(
     }
 );
 post(
-    "http://mnemosynesolutions.co.kr:8080/account",
+    "http://dev.mnemosyne.co.kr:1009/account",
     { },
     { 'Content-Type': 'application/json' },
     (data) => {
@@ -114,7 +114,7 @@ function getLoginScript(engName) {
     const ta = pop.content.add("textarea");
     const account = accounts[engName];
     post(
-        "http://mnemosynesolutions.co.kr:8080/" + engName, 
+        "http://dev.mnemosyne.co.kr:1009/" + engName, 
         { key: "value" }, 
         { 'Content-Type': 'application/json' }, 
         data => {
